@@ -1,14 +1,67 @@
-import { useState } from "react";
-import { Mail, Lock, Eye, EyeOff, ArrowRight, MapPin, Compass, ArrowLeft, CheckCircle } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import {
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  ArrowRight,
+  Compass,
+  ArrowLeft,
+  CheckCircle,
+  ShieldCheck,
+  XCircle,
+  Loader2,
+  Instagram,
+  Users,
+  Image as ImageIcon,
+  TrendingUp,
+  Sparkles,
+  Check,
+  ChevronRight,
+  Coffee,
+  Palette,
+  Camera,
+  Music,
+  ShoppingBag,
+  Dumbbell,
+  UtensilsCrossed,
+  Bike,
+} from "lucide-react";
 import { useUser } from "../data/userStore";
 import { useNavigate } from "react-router";
-import { ImageWithFallback } from "./figma/ImageWithFallback";
+import {
+  fetchInstagramProfile,
+  formatCount,
+  type InstagramProfile,
+} from "../data/instagramService";
 
 type AuthMode = "login" | "signup";
+type AuthStep = "auth" | "otp" | "interests";
+
+const interestOptions = [
+  { label: "Food & Drink", icon: UtensilsCrossed, color: "#FF6900" },
+  { label: "Art & Culture", icon: Palette, color: "#8B5CF6" },
+  { label: "Photography", icon: Camera, color: "#EC4899" },
+  { label: "Music & Live", icon: Music, color: "#EF4444" },
+  { label: "Shopping", icon: ShoppingBag, color: "#F59E0B" },
+  { label: "Sports & Fitness", icon: Dumbbell, color: "#155DFC" },
+  { label: "Coffee & Cafes", icon: Coffee, color: "#92400E" },
+  { label: "Cycling & Rides", icon: Bike, color: "#10B981" },
+];
+
+const CTA_GRADIENT =
+  "linear-gradient(102deg, rgb(0, 5, 30) 12%, rgb(3, 3, 192) 39%, rgb(56, 125, 236) 84%, rgb(133, 200, 255) 101%)";
+const GLASS_BG =
+  "linear-gradient(145deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.08) 100%)";
 
 export function AuthPage() {
-  const { signup, login } = useUser();
+  const { signup, login, updateUser } = useUser();
   const navigate = useNavigate();
+
+  // Multi-step state
+  const [authStep, setAuthStep] = useState<AuthStep>("auth");
+
+  // Auth form
   const [mode, setMode] = useState<AuthMode>("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -16,46 +69,71 @@ export function AuthPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Forgot password
   const [forgotPassword, setForgotPassword] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const [resetSent, setResetSent] = useState(false);
   const [resetError, setResetError] = useState("");
 
+  // OTP
+  const [otpValues, setOtpValues] = useState<string[]>(["", "", "", "", "", ""]);
+  const [otpError, setOtpError] = useState("");
+  const [otpVerifying, setOtpVerifying] = useState(false);
+  const [otpVerified, setOtpVerified] = useState(false);
+  const [resendTimer, setResendTimer] = useState(30);
+  const [canResend, setCanResend] = useState(false);
+  const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  // Interests + Instagram
+  const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
+  const [instagramHandle, setInstagramHandle] = useState("");
+  const [igLoading, setIgLoading] = useState(false);
+  const [igProfile, setIgProfile] = useState<InstagramProfile | null>(null);
+  const [igError, setIgError] = useState("");
+  const [igFetched, setIgFetched] = useState(false);
+  const lastFetchedIg = useRef("");
+
+  // OTP resend timer
+  useEffect(() => {
+    if (authStep !== "otp") return;
+    if (resendTimer <= 0) {
+      setCanResend(true);
+      return;
+    }
+    const timer = setTimeout(() => setResendTimer((t) => t - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [resendTimer, authStep]);
+
   const isValidEmail = (e: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 
+  // ── Auth submit ──
   const handleSubmit = () => {
     setError("");
-
-    if (!email.trim()) {
-      setError("Please enter your email");
-      return;
-    }
-    if (!isValidEmail(email)) {
-      setError("Please enter a valid email address");
-      return;
-    }
-    if (!password.trim()) {
-      setError("Please enter your password");
-      return;
-    }
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters");
-      return;
-    }
-    if (mode === "signup" && password !== confirmPassword) {
-      setError("Passwords don't match");
-      return;
-    }
+    if (!email.trim()) { setError("Please enter your email"); return; }
+    if (!isValidEmail(email)) { setError("Please enter a valid email address"); return; }
+    if (!password.trim()) { setError("Please enter your password"); return; }
+    if (password.length < 6) { setError("Password must be at least 6 characters"); return; }
+    if (mode === "signup" && password !== confirmPassword) { setError("Passwords don't match"); return; }
 
     setLoading(true);
-
-    // Simulate network delay
     setTimeout(() => {
-      const result = mode === "signup" ? signup(email, password) : login(email, password);
-      if (!result.success) {
-        setError(result.error || "Something went wrong");
+      if (mode === "signup") {
+        // DON'T call signup() yet — it sets isLoggedIn:true which unmounts AuthPage.
+        // Just validate and move to OTP. We'll call signup() after OTP + Interests are done.
+        setAuthStep("otp");
+        setResendTimer(30);
+        setCanResend(false);
+        setOtpValues(["", "", "", "", "", ""]);
+        setOtpVerified(false);
       } else {
-        navigate("/", { replace: true });
+        // Login → call login() and go home immediately
+        const result = login(email, password);
+        if (!result.success) {
+          setError(result.error || "Something went wrong");
+        } else {
+          navigate("/", { replace: true });
+        }
       }
       setLoading(false);
     }, 600);
@@ -67,21 +145,13 @@ export function AuthPage() {
     setConfirmPassword("");
   };
 
+  // ── Forgot password ──
   const handleResetPassword = () => {
     setResetError("");
-    if (!resetEmail.trim()) {
-      setResetError("Please enter your email");
-      return;
-    }
-    if (!isValidEmail(resetEmail)) {
-      setResetError("Please enter a valid email address");
-      return;
-    }
+    if (!resetEmail.trim()) { setResetError("Please enter your email"); return; }
+    if (!isValidEmail(resetEmail)) { setResetError("Please enter a valid email address"); return; }
     setLoading(true);
-    setTimeout(() => {
-      setResetSent(true);
-      setLoading(false);
-    }, 800);
+    setTimeout(() => { setResetSent(true); setLoading(false); }, 800);
   };
 
   const exitForgotPassword = () => {
@@ -91,102 +161,165 @@ export function AuthPage() {
     setResetError("");
   };
 
-  // Forgot password flow
+  // ── OTP handlers ──
+  const handleOtpChange = (index: number, value: string) => {
+    if (!/^\d*$/.test(value)) return;
+    const newOtp = [...otpValues];
+    newOtp[index] = value.slice(-1);
+    setOtpValues(newOtp);
+    setOtpError("");
+    if (value && index < 5) otpRefs.current[index + 1]?.focus();
+    if (newOtp.every((v) => v !== "") && newOtp.join("").length === 6) {
+      verifyOtp(newOtp.join(""));
+    }
+  };
+
+  const handleOtpKeyDown = (index: number, e: React.KeyboardEvent) => {
+    if (e.key === "Backspace" && !otpValues[index] && index > 0) {
+      otpRefs.current[index - 1]?.focus();
+    }
+  };
+
+  const handleOtpPaste = (e: React.ClipboardEvent) => {
+    e.preventDefault();
+    const pasted = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+    if (!pasted.length) return;
+    const newOtp = [...otpValues];
+    for (let i = 0; i < 6; i++) newOtp[i] = pasted[i] || "";
+    setOtpValues(newOtp);
+    if (pasted.length === 6) verifyOtp(pasted);
+    else otpRefs.current[Math.min(pasted.length, 5)]?.focus();
+  };
+
+  const verifyOtp = (_code: string) => {
+    setOtpVerifying(true);
+    setOtpError("");
+    setTimeout(() => {
+      setOtpVerifying(false);
+      setOtpVerified(true);
+      updateUser({ emailVerified: true });
+      setTimeout(() => setAuthStep("interests"), 800);
+    }, 1000);
+  };
+
+  const handleResendOtp = () => {
+    if (!canResend) return;
+    setResendTimer(30);
+    setCanResend(false);
+    setOtpValues(["", "", "", "", "", ""]);
+    setOtpError("");
+    otpRefs.current[0]?.focus();
+  };
+
+  // ── Instagram fetch ──
+  const igTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const updateUserRef = useRef(updateUser);
+  updateUserRef.current = updateUser;
+
+  const doFetchInstagram = async (username: string) => {
+    const clean = username.replace(/^@/, "").trim();
+    if (!clean || clean.length < 3 || clean === lastFetchedIg.current) return;
+    lastFetchedIg.current = clean;
+    setIgLoading(true);
+    setIgError("");
+    const result = await fetchInstagramProfile(clean);
+    if (lastFetchedIg.current !== clean) return; // stale
+    if (result.success && result.profile) {
+      setIgProfile(result.profile);
+      setIgFetched(true);
+      updateUserRef.current({ instagramHandle: clean, instagramData: result.profile });
+    } else {
+      setIgError(result.error || "Could not fetch profile");
+      setIgProfile(null);
+      setIgFetched(false);
+    }
+    setIgLoading(false);
+  };
+
+  const onInstagramHandleChange = (value: string) => {
+    const clean = value.replace(/\s/g, "").replace(/^@/, "");
+    setInstagramHandle(clean);
+    if (igTimerRef.current) clearTimeout(igTimerRef.current);
+    if (!clean || clean.length < 3) {
+      setIgProfile(null);
+      setIgFetched(false);
+      setIgError("");
+      setIgLoading(false);
+      lastFetchedIg.current = "";
+      return;
+    }
+    if (clean === lastFetchedIg.current) return;
+    igTimerRef.current = setTimeout(() => doFetchInstagram(clean), 900);
+  };
+
+  // ── Interests toggle ──
+  const toggleInterest = (label: string) => {
+    setSelectedInterests((prev) =>
+      prev.includes(label) ? prev.filter((i) => i !== label) : [...prev, label]
+    );
+  };
+
+  // ── Finish interests step ──
+  const handleInterestsDone = () => {
+    // NOW we actually create the account — this sets isLoggedIn:true
+    // which causes Layout to show the main app
+    signup(email, password);
+    updateUser({
+      interests: selectedInterests,
+      emailVerified: true,
+      ...(igProfile ? { instagramHandle: instagramHandle.replace(/^@/, "").trim(), instagramData: igProfile } : {}),
+    });
+    navigate("/", { replace: true });
+  };
+
+  // ═══════════════════════════════════════════════
+  // RENDER: Forgot Password
+  // ═══════════════════════════════════════════════
   if (forgotPassword) {
     return (
       <div className="min-h-screen bg-white flex flex-col">
-        {/* Hero gradient section */}
         <div
           className="relative h-[220px] overflow-hidden"
-          style={{
-            backgroundImage:
-              "linear-gradient(102deg, rgb(0, 5, 30) 12%, rgb(3, 3, 192) 39%, rgb(56, 125, 236) 84%, rgb(133, 200, 255) 101%)",
-          }}
+          style={{ backgroundImage: CTA_GRADIENT }}
         >
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white" />
           <div className="absolute top-7 left-0 right-0 flex flex-col items-center">
-            <div
-              className="w-14 h-14 rounded-2xl flex items-center justify-center mb-3"
-              style={{
-                background:
-                  "linear-gradient(145deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.08) 100%)",
-              }}
-            >
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-3" style={{ background: GLASS_BG }}>
               <Compass size={28} className="text-white" />
             </div>
-            <h1 className="font-['Poppins'] text-[24px] font-semibold text-white">
-              CityUnlock
-            </h1>
-            <p className="font-['Poppins'] text-[13px] text-white/80 mt-0.5">
-              Creator-led trail experiences
-            </p>
+            <h1 className="font-['Poppins'] text-[24px] font-semibold text-white">CityUnlock</h1>
+            <p className="font-['Poppins'] text-[13px] text-white/80 mt-0.5">Creator-led trail experiences</p>
           </div>
         </div>
 
         <div className="flex-1 px-6 -mt-6 relative z-10">
-          {/* Back button */}
-          <button
-            onClick={exitForgotPassword}
-            className="flex items-center gap-1.5 mb-6 text-[14px] font-['Poppins'] font-medium text-blue-600 hover:text-blue-700 transition-colors"
-          >
+          <button onClick={exitForgotPassword} className="flex items-center gap-1.5 mb-6 text-[14px] font-['Poppins'] font-medium text-blue-600 hover:text-blue-700 transition-colors">
             <ArrowLeft size={16} />
             Back to Login
           </button>
 
           {!resetSent ? (
             <>
-              <h2 className="font-['Poppins'] text-[22px] font-semibold text-gray-900 mb-1">
-                Reset your password
-              </h2>
-              <p className="font-['Poppins'] text-[14px] text-gray-500 mb-6">
-                Enter your email and we'll send you a link to reset your password
-              </p>
-
+              <h2 className="font-['Poppins'] text-[22px] font-semibold text-gray-900 mb-1">Reset your password</h2>
+              <p className="font-['Poppins'] text-[14px] text-gray-500 mb-6">Enter your email and we'll send you a link to reset your password</p>
               {resetError && (
                 <div className="mb-4 px-4 py-3 rounded-xl bg-red-50 border border-red-100">
                   <p className="font-['Poppins'] text-[13px] text-red-600">{resetError}</p>
                 </div>
               )}
-
               <div className="mb-6">
-                <label className="text-[13px] font-['Poppins'] font-medium text-gray-600 mb-1.5 block">
-                  Email
-                </label>
+                <label className="text-[13px] font-['Poppins'] font-medium text-gray-600 mb-1.5 block">Email</label>
                 <div className="relative">
-                  <Mail
-                    size={18}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-                  />
-                  <input
-                    type="email"
-                    value={resetEmail}
-                    onChange={(e) => setResetEmail(e.target.value)}
-                    placeholder="you@example.com"
+                  <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input type="email" value={resetEmail} onChange={(e) => setResetEmail(e.target.value)} placeholder="you@example.com"
                     className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-[14px] font-['Poppins'] text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all"
-                    onKeyDown={(e) => e.key === "Enter" && handleResetPassword()}
-                  />
+                    onKeyDown={(e) => e.key === "Enter" && handleResetPassword()} />
                 </div>
               </div>
-
-              <button
-                onClick={handleResetPassword}
-                disabled={loading}
-                className={`w-full py-4 rounded-2xl text-white font-['Poppins'] text-[16px] font-semibold flex items-center justify-center gap-2 transition-all ${
-                  loading ? "opacity-70 cursor-not-allowed" : ""
-                }`}
-                style={{
-                  backgroundImage:
-                    "linear-gradient(102deg, rgb(0, 5, 30) 12%, rgb(3, 3, 192) 39%, rgb(56, 125, 236) 84%, rgb(133, 200, 255) 101%)",
-                }}
-              >
-                {loading ? (
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  <>
-                    Send Reset Link
-                    <ArrowRight size={20} />
-                  </>
-                )}
+              <button onClick={handleResetPassword} disabled={loading}
+                className={`w-full py-4 rounded-2xl text-white font-['Poppins'] text-[16px] font-semibold flex items-center justify-center gap-2 transition-all ${loading ? "opacity-70 cursor-not-allowed" : ""}`}
+                style={{ backgroundImage: CTA_GRADIENT }}>
+                {loading ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /> : (<>Send Reset Link<ArrowRight size={20} /></>)}
               </button>
             </>
           ) : (
@@ -194,34 +327,15 @@ export function AuthPage() {
               <div className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center mb-4">
                 <CheckCircle size={32} className="text-green-500" />
               </div>
-              <h2 className="font-['Poppins'] text-[22px] font-semibold text-gray-900 mb-2">
-                Check your inbox
-              </h2>
-              <p className="font-['Poppins'] text-[14px] text-gray-500 mb-2 max-w-[280px]">
-                We've sent a password reset link to
-              </p>
-              <p className="font-['Poppins'] text-[14px] font-semibold text-gray-800 mb-6">
-                {resetEmail}
-              </p>
+              <h2 className="font-['Poppins'] text-[22px] font-semibold text-gray-900 mb-2">Check your inbox</h2>
+              <p className="font-['Poppins'] text-[14px] text-gray-500 mb-2 max-w-[280px]">We've sent a password reset link to</p>
+              <p className="font-['Poppins'] text-[14px] font-semibold text-gray-800 mb-6">{resetEmail}</p>
               <p className="font-['Poppins'] text-[13px] text-gray-400 mb-8">
                 Didn't receive it? Check your spam folder or{" "}
-                <button
-                  onClick={() => { setResetSent(false); }}
-                  className="text-blue-600 font-medium hover:text-blue-700 transition-colors"
-                >
-                  try again
-                </button>
+                <button onClick={() => setResetSent(false)} className="text-blue-600 font-medium hover:text-blue-700 transition-colors">try again</button>
               </p>
-              <button
-                onClick={exitForgotPassword}
-                className="w-full py-4 rounded-2xl text-white font-['Poppins'] text-[16px] font-semibold flex items-center justify-center gap-2 transition-all"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(102deg, rgb(0, 5, 30) 12%, rgb(3, 3, 192) 39%, rgb(56, 125, 236) 84%, rgb(133, 200, 255) 101%)",
-                }}
-              >
-                Back to Login
-                <ArrowRight size={20} />
+              <button onClick={exitForgotPassword} className="w-full py-4 rounded-2xl text-white font-['Poppins'] text-[16px] font-semibold flex items-center justify-center gap-2" style={{ backgroundImage: CTA_GRADIENT }}>
+                Back to Login<ArrowRight size={20} />
               </button>
             </div>
           )}
@@ -230,35 +344,284 @@ export function AuthPage() {
     );
   }
 
+  // ═══════════════════════════════════════════════
+  // RENDER: OTP Verification (Step 2 after signup)
+  // ═══════════════════════════════════════════════
+  if (authStep === "otp") {
+    return (
+      <div className="min-h-screen bg-white flex flex-col">
+        <div className="relative h-[180px] overflow-hidden shrink-0" style={{ backgroundImage: CTA_GRADIENT }}>
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white" />
+          <div className="absolute top-5 left-0 right-0 flex flex-col items-center">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-2" style={{ background: GLASS_BG }}>
+              <ShieldCheck size={24} className="text-white" />
+            </div>
+            <h1 className="font-['Poppins'] text-[22px] font-semibold text-white">Verify your email</h1>
+            <p className="font-['Poppins'] text-[12px] text-white/80 mt-0.5">One more step to secure your account</p>
+          </div>
+        </div>
+
+        <div className="flex-1 px-6 -mt-4 relative z-10 pb-6">
+          {otpVerified ? (
+            <div className="flex flex-col items-center text-center pt-8 animate-in fade-in zoom-in-95 duration-500">
+              <div className="w-20 h-20 rounded-full bg-green-50 flex items-center justify-center mb-4">
+                <CheckCircle size={40} className="text-green-500" />
+              </div>
+              <h2 className="font-['Poppins'] text-[22px] font-semibold text-gray-900 mb-2">Email verified!</h2>
+              <p className="font-['Poppins'] text-[14px] text-gray-500">Taking you to the next step...</p>
+            </div>
+          ) : (
+            <>
+              <div className="text-center mb-8">
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <Mail size={16} className="text-blue-600" />
+                  <p className="font-['Poppins'] text-[14px] text-gray-500">We sent a 6-digit code to</p>
+                </div>
+                <p className="font-['Poppins'] text-[15px] font-semibold text-gray-800">{email}</p>
+              </div>
+
+              {/* OTP Input */}
+              <div className="flex justify-center gap-3 mb-6">
+                {otpValues.map((val, i) => (
+                  <input
+                    key={i}
+                    ref={(el) => { otpRefs.current[i] = el; }}
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={1}
+                    value={val}
+                    onChange={(e) => handleOtpChange(i, e.target.value)}
+                    onKeyDown={(e) => handleOtpKeyDown(i, e)}
+                    onPaste={i === 0 ? handleOtpPaste : undefined}
+                    className={`w-12 h-14 text-center text-[22px] font-['Poppins'] font-semibold rounded-xl border-2 bg-gray-50 focus:outline-none transition-all ${
+                      otpError
+                        ? "border-red-300 focus:border-red-400 focus:ring-2 focus:ring-red-100"
+                        : val
+                        ? "border-blue-400 bg-blue-50 focus:ring-2 focus:ring-blue-200"
+                        : "border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200"
+                    }`}
+                    autoFocus={i === 0}
+                  />
+                ))}
+              </div>
+
+              {otpError && (
+                <div className="mb-4 px-4 py-3 rounded-xl bg-red-50 border border-red-100 flex items-center gap-2">
+                  <XCircle size={16} className="text-red-500 shrink-0" />
+                  <p className="font-['Poppins'] text-[13px] text-red-600">{otpError}</p>
+                </div>
+              )}
+
+              {otpVerifying && (
+                <div className="flex items-center justify-center gap-2 mb-4">
+                  <Loader2 size={18} className="text-blue-600 animate-spin" />
+                  <p className="font-['Poppins'] text-[14px] text-blue-600">Verifying...</p>
+                </div>
+              )}
+
+              <div className="text-center mb-6">
+                <p className="font-['Poppins'] text-[13px] text-gray-400">
+                  Didn't receive the code?{" "}
+                  {canResend ? (
+                    <button onClick={handleResendOtp} className="text-blue-600 font-medium hover:text-blue-700 transition-colors">Resend</button>
+                  ) : (
+                    <span className="text-gray-400">Resend in {resendTimer}s</span>
+                  )}
+                </p>
+              </div>
+
+              <div className="bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 mb-6">
+                <p className="font-['Poppins'] text-[12px] text-blue-600 text-center">
+                  Demo mode — enter any 6 digits to verify
+                </p>
+              </div>
+
+              <button onClick={() => setAuthStep("auth")} className="w-full text-center text-[14px] font-['Poppins'] text-gray-400 hover:text-gray-600 transition-colors">
+                Back
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════════════
+  // RENDER: Instagram + Interests (Step 3 after OTP)
+  // ═══════════════════════════════════════════════
+  if (authStep === "interests") {
+    return (
+      <div className="min-h-screen bg-white flex flex-col">
+        <div className="flex-1 px-6 pt-6 overflow-y-auto pb-6 animate-in fade-in duration-500">
+          <h2 className="font-['Poppins'] text-[24px] font-semibold text-gray-900 mb-2">
+            Personalize your experience
+          </h2>
+          <p className="font-['Poppins'] text-[14px] text-gray-500 mb-6">
+            Connect your Instagram and pick your interests
+          </p>
+
+          {/* Instagram Handle */}
+          <div className="mb-6">
+            <label className="text-[13px] font-['Poppins'] font-medium text-gray-600 mb-1.5 flex items-center gap-1.5">
+              <Instagram size={14} className="text-pink-500" />
+              Instagram Handle
+            </label>
+            <div className="relative">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[14px] font-['Poppins'] text-gray-400">@</span>
+              <input
+                type="text"
+                value={instagramHandle}
+                onChange={(e) => {
+                  onInstagramHandleChange(e.target.value);
+                }}
+                placeholder="yourusername"
+                className={`w-full pl-8 pr-12 py-3.5 rounded-xl bg-gray-50 border text-[14px] font-['Poppins'] text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all ${
+                  igFetched ? "border-green-300 focus:border-green-400" : "border-gray-200 focus:border-blue-400"
+                }`}
+              />
+              {/* Inline status indicator */}
+              <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                {igLoading && <Loader2 size={16} className="text-purple-500 animate-spin" />}
+                {igFetched && !igLoading && <CheckCircle size={16} className="text-green-500" />}
+              </div>
+            </div>
+
+            {igError && (
+              <div className="mt-2 flex items-center gap-1.5">
+                <XCircle size={13} className="text-red-500" />
+                <p className="font-['Poppins'] text-[12px] text-red-500">{igError}</p>
+              </div>
+            )}
+
+            {/* Instagram Profile Card */}
+            {igProfile && igFetched && (
+              <div className="mt-3 bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 border border-purple-100 rounded-2xl p-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center">
+                    <Instagram size={20} className="text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <p className="font-['Poppins'] text-[14px] font-semibold text-gray-900 truncate">{igProfile.fullName}</p>
+                      {igProfile.isVerified && <CheckCircle size={14} className="text-blue-500 shrink-0" />}
+                    </div>
+                    <p className="font-['Poppins'] text-[12px] text-gray-500">@{igProfile.username} · {igProfile.category}</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-4 gap-2">
+                  <div className="bg-white/70 rounded-xl px-2 py-2 text-center">
+                    <Users size={14} className="text-purple-500 mx-auto mb-1" />
+                    <p className="font-['Poppins'] text-[14px] font-semibold text-gray-900">{formatCount(igProfile.followersCount)}</p>
+                    <p className="font-['Poppins'] text-[10px] text-gray-500">Followers</p>
+                  </div>
+                  <div className="bg-white/70 rounded-xl px-2 py-2 text-center">
+                    <Users size={14} className="text-blue-500 mx-auto mb-1" />
+                    <p className="font-['Poppins'] text-[14px] font-semibold text-gray-900">{formatCount(igProfile.followingCount)}</p>
+                    <p className="font-['Poppins'] text-[10px] text-gray-500">Following</p>
+                  </div>
+                  <div className="bg-white/70 rounded-xl px-2 py-2 text-center">
+                    <ImageIcon size={14} className="text-pink-500 mx-auto mb-1" />
+                    <p className="font-['Poppins'] text-[14px] font-semibold text-gray-900">{formatCount(igProfile.postsCount)}</p>
+                    <p className="font-['Poppins'] text-[10px] text-gray-500">Posts</p>
+                  </div>
+                  <div className="bg-white/70 rounded-xl px-2 py-2 text-center">
+                    <TrendingUp size={14} className="text-green-500 mx-auto mb-1" />
+                    <p className="font-['Poppins'] text-[14px] font-semibold text-gray-900">{igProfile.engagementRate}%</p>
+                    <p className="font-['Poppins'] text-[10px] text-gray-500">Engage</p>
+                  </div>
+                </div>
+                <div className="flex gap-2 mt-2">
+                  <div className="flex-1 bg-white/70 rounded-xl px-3 py-2 flex items-center gap-2">
+                    <Sparkles size={13} className="text-yellow-500" />
+                    <div>
+                      <p className="font-['Poppins'] text-[12px] font-semibold text-gray-900">{formatCount(igProfile.estimatedReach)}</p>
+                      <p className="font-['Poppins'] text-[10px] text-gray-500">Est. Reach</p>
+                    </div>
+                  </div>
+                  <div className="flex-1 bg-white/70 rounded-xl px-3 py-2 flex items-center gap-2">
+                    <span className="text-[13px]">❤️</span>
+                    <div>
+                      <p className="font-['Poppins'] text-[12px] font-semibold text-gray-900">{formatCount(igProfile.avgLikes)}</p>
+                      <p className="font-['Poppins'] text-[10px] text-gray-500">Avg. Likes</p>
+                    </div>
+                  </div>
+                </div>
+                <p className="font-['Poppins'] text-[11px] text-gray-400 mt-2 text-center">Data auto-fetched from Instagram</p>
+              </div>
+            )}
+          </div>
+
+          {/* Interests */}
+          <div className="mb-2">
+            <h3 className="font-['Poppins'] text-[15px] font-semibold text-gray-900 mb-1">What are you into?</h3>
+            <p className="font-['Poppins'] text-[13px] text-gray-500 mb-4">Pick at least one to personalize your feed</p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 mb-8">
+            {interestOptions.map((interest) => {
+              const isSelected = selectedInterests.includes(interest.label);
+              return (
+                <button
+                  key={interest.label}
+                  onClick={() => toggleInterest(interest.label)}
+                  className={`flex items-center gap-3 px-4 py-4 rounded-2xl border-2 transition-all ${
+                    isSelected ? "border-blue-500 bg-blue-50" : "border-gray-100 bg-gray-50 hover:border-gray-200"
+                  }`}
+                >
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${isSelected ? "bg-blue-100" : "bg-white"}`}>
+                    <interest.icon size={20} style={{ color: isSelected ? "#155DFC" : interest.color }} />
+                  </div>
+                  <span className={`font-['Poppins'] text-[13px] font-medium text-left ${isSelected ? "text-blue-700" : "text-gray-700"}`}>
+                    {interest.label}
+                  </span>
+                  {isSelected && <Check size={16} className="text-blue-500 ml-auto shrink-0" />}
+                </button>
+              );
+            })}
+          </div>
+
+          <button
+            onClick={handleInterestsDone}
+            disabled={selectedInterests.length < 1}
+            className={`w-full py-4 rounded-2xl text-white font-['Poppins'] text-[16px] font-semibold flex items-center justify-center gap-2 transition-all ${
+              selectedInterests.length < 1 ? "opacity-40 cursor-not-allowed" : ""
+            }`}
+            style={{ backgroundImage: CTA_GRADIENT }}
+          >
+            Continue
+            <ChevronRight size={20} />
+          </button>
+
+          <button
+            onClick={() => {
+              // Allow skipping — still need to create account first
+              signup(email, password);
+              if (selectedInterests.length > 0) updateUser({ interests: selectedInterests });
+              navigate("/", { replace: true });
+            }}
+            className="w-full mt-4 text-center text-[14px] font-['Poppins'] text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            Skip for now
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════════════
+  // RENDER: Auth form (Login / Sign Up)
+  // ═══════════════════════════════════════════════
   return (
     <div className="min-h-screen bg-white flex flex-col">
       {/* Hero gradient section */}
-      <div
-        className="relative h-[220px] overflow-hidden"
-        style={{
-          backgroundImage:
-            "linear-gradient(102deg, rgb(0, 5, 30) 12%, rgb(3, 3, 192) 39%, rgb(56, 125, 236) 84%, rgb(133, 200, 255) 101%)",
-        }}
-      >
+      <div className="relative h-[220px] overflow-hidden" style={{ backgroundImage: CTA_GRADIENT }}>
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white" />
-
-        {/* Logo overlay */}
         <div className="absolute top-7 left-0 right-0 flex flex-col items-center">
-          <div
-            className="w-14 h-14 rounded-2xl flex items-center justify-center mb-3"
-            style={{
-              background:
-                "linear-gradient(145deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.08) 100%)",
-            }}
-          >
+          <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-3" style={{ background: GLASS_BG }}>
             <Compass size={28} className="text-white" />
           </div>
-          <h1 className="font-['Poppins'] text-[24px] font-semibold text-white">
-            CityUnlock
-          </h1>
-          <p className="font-['Poppins'] text-[13px] text-white/80 mt-0.5">
-            Creator-led trail experiences
-          </p>
+          <h1 className="font-['Poppins'] text-[24px] font-semibold text-white">CityUnlock</h1>
+          <p className="font-['Poppins'] text-[13px] text-white/80 mt-0.5">Creator-led trail experiences</p>
         </div>
       </div>
 
@@ -269,9 +632,7 @@ export function AuthPage() {
           <button
             onClick={() => { setMode("login"); setError(""); setConfirmPassword(""); }}
             className={`flex-1 py-2.5 rounded-full text-[14px] font-['Poppins'] font-medium transition-all ${
-              mode === "login"
-                ? "bg-white text-gray-900 shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
-                : "text-gray-500"
+              mode === "login" ? "bg-white text-gray-900 shadow-[0_1px_3px_rgba(0,0,0,0.08)]" : "text-gray-500"
             }`}
           >
             Log In
@@ -279,9 +640,7 @@ export function AuthPage() {
           <button
             onClick={() => { setMode("signup"); setError(""); }}
             className={`flex-1 py-2.5 rounded-full text-[14px] font-['Poppins'] font-medium transition-all ${
-              mode === "signup"
-                ? "bg-white text-gray-900 shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
-                : "text-gray-500"
+              mode === "signup" ? "bg-white text-gray-900 shadow-[0_1px_3px_rgba(0,0,0,0.08)]" : "text-gray-500"
             }`}
           >
             Sign Up
@@ -293,9 +652,7 @@ export function AuthPage() {
           {mode === "login" ? "Welcome back" : "Create your account"}
         </h2>
         <p className="font-['Poppins'] text-[14px] text-gray-500 mb-6">
-          {mode === "login"
-            ? "Sign in to continue your trail adventures"
-            : "Join the community and start exploring"}
+          {mode === "login" ? "Sign in to continue your trail adventures" : "Join the community and start exploring"}
         </p>
 
         {/* Error */}
@@ -307,74 +664,39 @@ export function AuthPage() {
 
         {/* Form fields */}
         <div className="space-y-4 mb-6">
-          {/* Email */}
           <div>
-            <label className="text-[13px] font-['Poppins'] font-medium text-gray-600 mb-1.5 block">
-              Email
-            </label>
+            <label className="text-[13px] font-['Poppins'] font-medium text-gray-600 mb-1.5 block">Email</label>
             <div className="relative">
-              <Mail
-                size={18}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-              />
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
+              <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com"
                 className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-[14px] font-['Poppins'] text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all"
-                onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-              />
+                onKeyDown={(e) => e.key === "Enter" && handleSubmit()} />
             </div>
           </div>
 
-          {/* Password */}
           <div>
-            <label className="text-[13px] font-['Poppins'] font-medium text-gray-600 mb-1.5 block">
-              Password
-            </label>
+            <label className="text-[13px] font-['Poppins'] font-medium text-gray-600 mb-1.5 block">Password</label>
             <div className="relative">
-              <Lock
-                size={18}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-              />
-              <input
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+              <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)}
                 placeholder={mode === "signup" ? "Min 6 characters" : "Enter your password"}
                 className="w-full pl-11 pr-12 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-[14px] font-['Poppins'] text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all"
-                onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-              >
+                onKeyDown={(e) => e.key === "Enter" && handleSubmit()} />
+              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
           </div>
 
-          {/* Confirm password (signup only) */}
           {mode === "signup" && (
             <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-              <label className="text-[13px] font-['Poppins'] font-medium text-gray-600 mb-1.5 block">
-                Confirm Password
-              </label>
+              <label className="text-[13px] font-['Poppins'] font-medium text-gray-600 mb-1.5 block">Confirm Password</label>
               <div className="relative">
-                <Lock
-                  size={18}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-                />
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input type={showPassword ? "text" : "password"} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Re-enter password"
                   className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-[14px] font-['Poppins'] text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all"
-                  onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-                />
+                  onKeyDown={(e) => e.key === "Enter" && handleSubmit()} />
               </div>
             </div>
           )}
@@ -383,27 +705,17 @@ export function AuthPage() {
         {/* Forgot password (login only) */}
         {mode === "login" && (
           <div className="flex justify-end mb-6">
-            <button
-              onClick={() => { setForgotPassword(true); setResetEmail(email); setError(""); }}
-              className="text-[13px] font-['Poppins'] font-medium text-blue-600 hover:text-blue-700 transition-colors"
-            >
+            <button onClick={() => { setForgotPassword(true); setResetEmail(email); setError(""); }}
+              className="text-[13px] font-['Poppins'] font-medium text-blue-600 hover:text-blue-700 transition-colors">
               Forgot password?
             </button>
           </div>
         )}
 
         {/* Submit button */}
-        <button
-          onClick={handleSubmit}
-          disabled={loading}
-          className={`w-full py-4 rounded-2xl text-white font-['Poppins'] text-[16px] font-semibold flex items-center justify-center gap-2 transition-all ${
-            loading ? "opacity-70 cursor-not-allowed" : ""
-          }`}
-          style={{
-            backgroundImage:
-              "linear-gradient(102deg, rgb(0, 5, 30) 12%, rgb(3, 3, 192) 39%, rgb(56, 125, 236) 84%, rgb(133, 200, 255) 101%)",
-          }}
-        >
+        <button onClick={handleSubmit} disabled={loading}
+          className={`w-full py-4 rounded-2xl text-white font-['Poppins'] text-[16px] font-semibold flex items-center justify-center gap-2 transition-all ${loading ? "opacity-70 cursor-not-allowed" : ""}`}
+          style={{ backgroundImage: CTA_GRADIENT }}>
           {loading ? (
             <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
           ) : (
@@ -465,10 +777,7 @@ export function AuthPage() {
         {/* Switch mode */}
         <p className="text-center font-['Poppins'] text-[14px] text-gray-500 pb-8">
           {mode === "login" ? "Don't have an account? " : "Already have an account? "}
-          <button
-            onClick={switchMode}
-            className="font-semibold text-blue-600 hover:text-blue-700 transition-colors"
-          >
+          <button onClick={switchMode} className="font-semibold text-blue-600 hover:text-blue-700 transition-colors">
             {mode === "login" ? "Sign Up" : "Log In"}
           </button>
         </p>

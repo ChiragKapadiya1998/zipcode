@@ -1,6 +1,7 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 
 import type { Trail } from "./trailData";
+import type { InstagramProfile } from "./instagramService";
 import { DEFAULT_CITY } from "./cities";
 
 export interface UserProfile {
@@ -12,6 +13,9 @@ export interface UserProfile {
   onboarded: boolean;
   isLoggedIn: boolean;
   email: string;
+  emailVerified: boolean;
+  instagramHandle: string;
+  instagramData: InstagramProfile | null;
   trailsJoined: number;
   trailsCompleted: number;
   trailsCreated: number;
@@ -111,6 +115,9 @@ const defaultProfile: UserProfile = {
   onboarded: false,
   isLoggedIn: false,
   email: "",
+  emailVerified: false,
+  instagramHandle: "",
+  instagramData: null,
   trailsJoined: 0,
   trailsCompleted: 0,
   trailsCreated: 0,
@@ -145,7 +152,14 @@ interface UserContextType {
   unreadCount: number;
 }
 
-const UserContext = createContext<UserContextType | null>(null);
+// Persist context across HMR to prevent "useUser must be used within UserProvider" errors
+// When Vite HMR re-executes this module, createContext() would create a NEW context object,
+// but the already-mounted UserProvider still provides the OLD one. This globalThis trick
+// ensures the same context object is reused across HMR updates.
+const CTX_KEY = '__CITYUNLOCK_USER_CTX__';
+const UserContext: React.Context<UserContextType | null> =
+  (globalThis as any)[CTX_KEY] ||
+  ((globalThis as any)[CTX_KEY] = createContext<UserContextType | null>(null));
 
 export function UserProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserProfile>(() => {

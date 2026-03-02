@@ -18,11 +18,13 @@ import {
   Heart,
   Users,
   Zap,
+  Instagram,
 } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { useUser } from "../data/userStore";
 import { trails } from "../data/trailData";
 import { MapPreview } from "./MapPreview";
+import { formatCount } from "../data/instagramService";
 
 const profileTabs = ["Joined", "Completed", "Favorites", "Badges"];
 
@@ -402,6 +404,23 @@ export function ProfilePage() {
                 </p>
               </div>
               <ChevronRight size={16} className="text-gray-300 shrink-0" />
+            </div>
+          )}
+          {/* Instagram Connected */}
+          {user.instagramData && (
+            <div className="flex items-center gap-3 bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-100 rounded-2xl px-4 py-3.5 mb-2.5">
+              <div className="w-[36px] h-[36px] rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center shrink-0">
+                <Instagram size={15} className="text-white" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-['Poppins'] text-[13px] font-medium text-gray-700">
+                  Instagram
+                </p>
+                <p className="font-['Poppins'] text-[12px] text-gray-500 truncate">
+                  @{user.instagramData.username} · {formatCount(user.instagramData.followersCount)} followers · {user.instagramData.engagementRate}% engage
+                </p>
+              </div>
+              <Check size={16} className="text-green-500 shrink-0" />
             </div>
           )}
           <button
