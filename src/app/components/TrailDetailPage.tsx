@@ -23,6 +23,20 @@ import { trails } from "../data/trailData";
 import type { TrailStop } from "../data/trailData";
 import { getCachedEventbriteTrails } from "../data/eventbriteService";
 import { MapPreview } from "./MapPreview";
+import { MobileOnlyModal } from "./MobileOnlyModal";
+
+// Detect desktop breakpoint (≥ 1024px)
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    setIsDesktop(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+  return isDesktop;
+}
 
 // Helper: get a clear display price for any trail
 function getDisplayPrice(trail: { isFree?: boolean; numericPrice?: number; currency?: string; price: string }): string {
@@ -37,6 +51,8 @@ export function TrailDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user, bookmarkTrail, checkInStop } = useUser();
+  const isDesktop = useIsDesktop();
+  const [showMobileOnlyModal, setShowMobileOnlyModal] = useState(false);
 
   // Scroll to top on mount / when trail ID changes
   useEffect(() => {
@@ -53,6 +69,12 @@ export function TrailDetailPage() {
 
   const handleCheckIn = useCallback(
     (stopId: number) => {
+      // On desktop, intercept check-in and show mobile-only prompt
+      if (isDesktop) {
+        setShowMobileOnlyModal(true);
+        return;
+      }
+
       // Gate check-in behind payment
       if (!joined) {
         setShowJoinPrompt(true);
@@ -85,30 +107,33 @@ export function TrailDetailPage() {
         return newStops;
       });
     },
-    [navigate, trail.id, joined, checkInStop]
+    [navigate, trail.id, joined, checkInStop, isDesktop]
   );
 
   const checkedInCount = stops.filter((s) => s.checkedIn).length;
 
   return (
     <div className="relative min-h-screen bg-white">
-      {/* Back Button — fixed at top, aligned within 430px container */}
-      <button
-        onClick={() => navigate("/")}
-        className="fixed top-4 z-50 bg-[rgba(30,30,30,0.35)] backdrop-blur-md rounded-full p-2 border border-white/40"
-        style={{ left: "max(16px, calc(50% - 215px + 16px))" }}
-      >
-        <ChevronLeft size={20} className="text-white" />
-      </button>
-
+      {/* Desktop two-column layout */}
+      <div className="lg:max-w-6xl lg:mx-auto lg:flex lg:gap-8 lg:px-8 lg:pt-6">
+        {/* Left column — hero + map (desktop) */}
+        <div className="lg:w-[55%] lg:shrink-0">
       {/* Hero Image */}
-      <div className="relative h-[300px]">
+      <div className="relative h-[300px] lg:h-[400px] lg:rounded-2xl lg:overflow-hidden">
         <ImageWithFallback
           src={trail.image}
           alt={trail.title}
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+
+        {/* Back Button — inside hero, top-left */}
+        <button
+          onClick={() => navigate("/")}
+          className="absolute top-4 left-4 z-20 bg-[rgba(30,30,30,0.35)] backdrop-blur-md rounded-full p-2 border border-white/40 lg:bg-white/90 lg:border-gray-200"
+        >
+          <ChevronLeft size={20} className="text-white lg:text-gray-700" />
+        </button>
 
         {/* Share Button */}
         <button className="absolute top-4 right-4 bg-white/20 backdrop-blur-md rounded-full p-2.5 border border-white/40">
@@ -154,8 +179,26 @@ export function TrailDetailPage() {
         </div>
       </div>
 
+      {/* Desktop: map in left column */}
+      <div className="hidden lg:block mt-6">
+        <h2 className="text-[16px] font-['Poppins'] font-semibold text-gray-900 mb-3">
+          Route Preview
+        </h2>
+        <MapPreview
+          singleTrailId={trail.id}
+          label={`${stops.filter((s) => s.unlocked || s.checkedIn).length}/${trail.totalStops} Stops`}
+          stopOverrides={stops.map((s) => ({ id: s.id, unlocked: s.unlocked, checkedIn: s.checkedIn }))}
+          navigateTarget={`/explore`}
+          respectStopVisibility={true}
+          purchased={joined}
+        />
+      </div>
+        </div>
+
+        {/* Right column / main content */}
+        <div className="lg:flex-1 lg:min-w-0">
       {/* Content */}
-      <div className="px-4 pt-5 pb-36">
+      <div className="px-4 lg:px-0 pt-5 pb-36 lg:pb-12">
         {/* Vibe descriptor */}
         <p className="text-[12px] font-['Poppins'] text-gray-400 italic mb-4">
           {trail.vibe}
@@ -298,7 +341,7 @@ export function TrailDetailPage() {
         </div>
 
         {/* Route Preview */}
-        <div className="mb-6">
+        <div className="mb-6 lg:hidden">
           <h2 className="text-[16px] font-['Poppins'] font-semibold text-gray-900 mb-3">
             Route Preview
           </h2>
@@ -372,7 +415,7 @@ export function TrailDetailPage() {
         </div>
 
         {/* Fixed Bottom Action Bar */}
-        <div className="fixed bottom-0 left-0 right-0 w-full max-w-[430px] mx-auto p-4 bg-white/95 backdrop-blur-md border-t border-gray-100 z-[999]">
+        <div className="fixed bottom-0 left-0 right-0 w-full max-w-[430px] lg:max-w-none lg:static lg:w-full mx-auto p-4 lg:p-0 lg:mt-6 bg-white/95 lg:bg-transparent backdrop-blur-md lg:backdrop-blur-none border-t border-gray-100 lg:border-0 z-[999] lg:z-auto">
           <button
             onClick={() => navigate(`/trail/${trail.id}/checkout`)}
             className="w-full py-3.5 rounded-2xl text-white font-['Poppins'] text-[14px] font-semibold flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
@@ -395,8 +438,8 @@ export function TrailDetailPage() {
               onClick={() => setShowJoinPrompt(false)}
             />
             {/* Sheet */}
-            <div className="fixed bottom-0 left-0 right-0 w-full max-w-[430px] mx-auto z-50 animate-in slide-in-from-bottom duration-300">
-              <div className="bg-white rounded-t-3xl px-5 pt-3 pb-8">
+            <div className="fixed bottom-0 left-0 right-0 w-full max-w-[430px] lg:max-w-[480px] mx-auto z-50 animate-in slide-in-from-bottom duration-300 lg:bottom-auto lg:top-1/2 lg:-translate-y-1/2">
+              <div className="bg-white rounded-t-3xl lg:rounded-3xl px-5 pt-3 pb-8">
                 {/* Handle */}
                 <div className="flex justify-center mb-5">
                   <div className="w-10 h-1 bg-gray-200 rounded-full" />
@@ -447,6 +490,13 @@ export function TrailDetailPage() {
           </>
         )}
       </div>
+        </div>
+      </div>
+      {/* Mobile-only modal */}
+      <MobileOnlyModal
+        open={showMobileOnlyModal}
+        onClose={() => setShowMobileOnlyModal(false)}
+      />
     </div>
   );
 }

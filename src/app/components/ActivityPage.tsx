@@ -76,17 +76,17 @@ export function ActivityPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white pb-28 relative overflow-hidden">
+    <div className="min-h-screen bg-white pb-28 lg:pb-12 relative overflow-hidden">
       {/* ── Gradient Header ── */}
       <div
-        className="relative px-4 pt-4 pb-10"
+        className="relative px-4 lg:px-8 pt-4 pb-10"
         style={{
           backgroundImage:
             "linear-gradient(126.8deg, rgb(146, 190, 255) 0%, rgb(190, 236, 255) 24%, rgb(242, 189, 151) 55%, rgb(255, 222, 222) 100%)",
         }}
       >
         {/* Top bar */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-4 lg:max-w-4xl lg:mx-auto">
           <button
             onClick={() => navigate(-1)}
             className="bg-[rgba(30,30,30,0.4)] border border-[rgba(255,255,255,0.6)] rounded-full p-2 active:scale-95 transition-transform"
@@ -109,7 +109,7 @@ export function ActivityPage() {
         </div>
 
         {/* Stats row — colored icons for personality */}
-        <div className="flex items-center justify-around backdrop-blur-md bg-[rgba(255,255,255,0.55)] border border-[rgba(255,255,255,0.7)] rounded-2xl px-3 py-3">
+        <div className="flex items-center justify-around backdrop-blur-md bg-[rgba(255,255,255,0.55)] border border-[rgba(255,255,255,0.7)] rounded-2xl px-3 py-3 lg:max-w-4xl lg:mx-auto">
           {/* Streak */}
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-xl bg-[rgba(255,120,50,0.15)] flex items-center justify-center">
@@ -162,7 +162,8 @@ export function ActivityPage() {
       </div>
 
       {/* ── White content area — overlaps gradient ── */}
-      <div className="relative -mt-4 bg-white rounded-t-[24px] z-10 px-4 pt-5">
+      <div className="relative -mt-4 bg-white rounded-t-[24px] z-10 px-4 lg:px-8 pt-5">
+        <div className="lg:max-w-4xl lg:mx-auto">
         {/* Tab toggle */}
         <div className="flex gap-0.5 bg-[#ECEDF2] rounded-full p-1 mb-4">
           {activityTabs.map((tab) => (
@@ -292,6 +293,7 @@ export function ActivityPage() {
             ))}
           </div>
         )}
+        </div>
       </div>
     </div>
   );

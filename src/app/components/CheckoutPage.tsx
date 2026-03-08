@@ -57,15 +57,26 @@ export function CheckoutPage() {
   const [groupSize, setGroupSize] = useState(1);
 
   // Generate upcoming date options from trail.date
-  const baseDateStr = trail.date; // e.g. "15 Jan 2026"
+  const baseDateStr = trail.date; // e.g. "15 Jan 2026" or "Jan 15, 2026"
   const dateOptions = (() => {
     const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
     const days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-    const parts = baseDateStr.split(" ");
-    const day = parseInt(parts[0]);
-    const monthIdx = months.indexOf(parts[1]);
-    const year = parseInt(parts[2]);
-    const base = new Date(year, monthIdx, day);
+
+    // Try parsing with Date constructor first (handles both "15 Jan 2026" and "Jan 15, 2026")
+    let base = new Date(baseDateStr);
+    if (isNaN(base.getTime())) {
+      // Fallback: try "DD Mon YYYY" format manually
+      const parts = baseDateStr.split(" ");
+      const day = parseInt(parts[0]);
+      const monthIdx = months.indexOf(parts[1]);
+      const year = parseInt(parts[2]);
+      if (!isNaN(day) && monthIdx >= 0 && !isNaN(year)) {
+        base = new Date(year, monthIdx, day);
+      } else {
+        base = new Date(); // ultimate fallback: today
+      }
+    }
+
     return [0, 3, 7, 14].map((offset) => {
       const d = new Date(base.getTime() + offset * 86400000);
       return {
@@ -149,7 +160,7 @@ export function CheckoutPage() {
   return (
     <div className="relative min-h-screen bg-[#f7f7f8]">
       {/* Header */}
-      <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-md px-4 pt-4 pb-3 flex items-center gap-3 border-b border-gray-100">
+      <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-md px-4 lg:px-8 pt-4 pb-3 flex items-center gap-3 border-b border-gray-100">
         <button
           onClick={() => navigate(-1)}
           className="w-9 h-9 rounded-full bg-gray-50 flex items-center justify-center border border-gray-100"
@@ -161,7 +172,7 @@ export function CheckoutPage() {
         </h1>
       </div>
 
-      <div className="px-4 pt-4 pb-44">
+      <div className="px-4 lg:px-8 pt-4 pb-44 lg:pb-12 lg:max-w-4xl lg:mx-auto">
         {/* Trail Summary Card */}
         <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden mb-3">
           <div className="flex gap-3.5 p-3.5">
@@ -459,7 +470,7 @@ export function CheckoutPage() {
       </div>
 
       {/* Fixed Bottom Pay Button — above everything, no bottom nav interference */}
-      <div className="fixed bottom-0 left-0 right-0 w-full max-w-[430px] mx-auto bg-white border-t border-gray-100 z-30 px-4 pt-3 pb-5">
+      <div className="fixed bottom-0 left-0 right-0 w-full max-w-[430px] mx-auto bg-white border-t border-gray-100 z-30 px-4 pt-3 pb-5 lg:static lg:max-w-4xl lg:border-0 lg:bg-transparent lg:px-8 lg:pt-0 lg:pb-8">
         <div className="flex items-center justify-between mb-3">
           <span className="text-[13px] font-['Poppins'] text-gray-500">
             Total

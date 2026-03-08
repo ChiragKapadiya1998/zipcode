@@ -63,7 +63,7 @@ export function CreateTrailIntroDrawer({
   const firstName = userName ? userName.split(" ")[0] : "";
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-end justify-center">
+    <div className="fixed inset-0 z-[9999] flex items-end lg:items-center justify-center">
       {/* Backdrop — tap to dismiss */}
       <div
         className={`absolute inset-0 transition-opacity duration-300 ${
@@ -74,7 +74,7 @@ export function CreateTrailIntroDrawer({
 
       {/* Drawer */}
       <div
-        className={`relative w-full max-w-[430px] bg-white rounded-t-[24px] transition-transform duration-[350ms] ease-[cubic-bezier(0.32,0.72,0,1)] ${
+        className={`relative w-full max-w-[430px] lg:max-w-[480px] bg-white rounded-t-[24px] lg:rounded-[24px] transition-transform duration-[350ms] ease-[cubic-bezier(0.32,0.72,0,1)] ${
           animating ? "translate-y-0" : "translate-y-full"
         }`}
       >

@@ -310,38 +310,199 @@ const LOCATION_PHOTO_BANK: LocationEntry[] = [
   // ═══ LOS ANGELES — Generic fallback ═══
   { keywords: ["los angeles", "la", "l.a."], url: "https://images.unsplash.com/photo-1676532313088-d45b06248d16?w=600&h=400&fit=crop", label: "Los Angeles" },
 
-  // ═══ SAN FRANCISCO BAY AREA ═══
-  { keywords: ["san francisco", "sf", "frisco", "golden gate", "fisherman's wharf", "embarcadero", "market st sf"], url: "https://images.unsplash.com/photo-1663443067746-d92d81494aa3?w=600&h=400&fit=crop", label: "San Francisco" },
-  { keywords: ["mission district", "valencia st", "mission st sf", "24th st sf", "dolores"], url: "https://images.unsplash.com/photo-1663443067746-d92d81494aa3?w=600&h=400&fit=crop", label: "Mission District, SF" },
-  { keywords: ["oakland", "lake merritt", "telegraph ave oakland", "jack london"], url: "https://images.unsplash.com/photo-1631165854010-bab7e2c19ee4?w=600&h=400&fit=crop", label: "Oakland" },
-  { keywords: ["castro", "haight", "haight-ashbury", "noe valley", "hayes valley"], url: "https://images.unsplash.com/photo-1663443067746-d92d81494aa3?w=600&h=400&fit=crop", label: "Haight-Ashbury, SF" },
+  // ═══ SAN FRANCISCO BAY AREA — Neighborhoods ═══
+  { keywords: ["san francisco", "sf", "frisco", "market st sf"], url: "https://images.unsplash.com/photo-1663443067746-d92d81494aa3?w=600&h=400&fit=crop", label: "San Francisco" },
+  { keywords: ["mission district", "valencia st", "mission st sf", "24th st sf", "dolores"], url: "https://images.unsplash.com/photo-1735431382039-f9c702c64b71?w=600&h=400&fit=crop", label: "Mission District, SF" },
+  { keywords: ["chinatown sf", "chinatown san francisco", "grant ave sf", "stockton st sf"], url: "https://images.unsplash.com/photo-1648495046493-cfea4c02f11a?w=600&h=400&fit=crop", label: "Chinatown, SF" },
+  { keywords: ["haight", "haight-ashbury", "haight ashbury", "ashbury st"], url: "https://images.unsplash.com/photo-1504675650-858118733665?w=600&h=400&fit=crop", label: "Haight-Ashbury" },
+  { keywords: ["north beach sf", "columbus ave sf", "city lights bookstore", "telegraph hill"], url: "https://images.unsplash.com/photo-1764983432388-a41745c06a39?w=600&h=400&fit=crop", label: "North Beach, SF" },
+  { keywords: ["castro", "castro district", "castro st sf", "18th st sf"], url: "https://images.unsplash.com/photo-1682037167909-96883f8392d5?w=600&h=400&fit=crop", label: "The Castro" },
+  { keywords: ["noe valley", "24th st noe", "church st noe"], url: "https://images.unsplash.com/photo-1682037167909-96883f8392d5?w=600&h=400&fit=crop", label: "Noe Valley" },
+  { keywords: ["hayes valley", "hayes st", "octavia blvd", "patricia's green"], url: "https://images.unsplash.com/photo-1663443067746-d92d81494aa3?w=600&h=400&fit=crop", label: "Hayes Valley" },
+  { keywords: ["golden gate park", "de young", "california academy", "music concourse"], url: "https://images.unsplash.com/photo-1677722713120-fc79e3516343?w=600&h=400&fit=crop", label: "Golden Gate Park" },
+  { keywords: ["fisherman's wharf", "fishermans wharf", "pier 39", "ghirardelli"], url: "https://images.unsplash.com/photo-1583081635498-accaa5f7fc50?w=600&h=400&fit=crop", label: "Fisherman's Wharf" },
+  { keywords: ["embarcadero", "ferry building", "embarcadero center", "pier 1 sf"], url: "https://images.unsplash.com/photo-1562788329-389ebdf0db59?w=600&h=400&fit=crop", label: "The Embarcadero" },
+  { keywords: ["marina district sf", "marina sf", "chestnut st sf", "union st sf", "palace of fine arts"], url: "https://images.unsplash.com/photo-1643457345450-a2859cc47ed6?w=600&h=400&fit=crop", label: "Marina District" },
+  { keywords: ["soma", "south of market", "2nd st sf", "3rd st sf", "howard st sf", "folsom st sf"], url: "https://images.unsplash.com/photo-1562788329-389ebdf0db59?w=600&h=400&fit=crop", label: "SoMa, SF" },
+  { keywords: ["pacific heights", "fillmore st sf", "divisadero sf", "japantown sf"], url: "https://images.unsplash.com/photo-1643457345450-a2859cc47ed6?w=600&h=400&fit=crop", label: "Pacific Heights" },
+  { keywords: ["sunset district sf", "irving st sf", "judah st sf", "outer sunset"], url: "https://images.unsplash.com/photo-1677722713120-fc79e3516343?w=600&h=400&fit=crop", label: "Sunset District" },
+  { keywords: ["richmond district sf", "clement st sf", "geary blvd sf", "inner richmond"], url: "https://images.unsplash.com/photo-1677722713120-fc79e3516343?w=600&h=400&fit=crop", label: "Richmond District" },
+  { keywords: ["nob hill", "cable car", "california st sf", "powell st sf"], url: "https://images.unsplash.com/photo-1663443067746-d92d81494aa3?w=600&h=400&fit=crop", label: "Nob Hill" },
+  { keywords: ["russian hill", "lombard street", "hyde st sf", "polk st sf"], url: "https://images.unsplash.com/photo-1663443067746-d92d81494aa3?w=600&h=400&fit=crop", label: "Russian Hill" },
+  { keywords: ["dogpatch sf", "22nd st sf", "minnesota st", "third st sf"], url: "https://images.unsplash.com/photo-1735431382039-f9c702c64b71?w=600&h=400&fit=crop", label: "Dogpatch" },
+  { keywords: ["potrero hill", "18th st potrero", "connecticut st sf"], url: "https://images.unsplash.com/photo-1735431382039-f9c702c64b71?w=600&h=400&fit=crop", label: "Potrero Hill" },
+  { keywords: ["presidio sf", "crissy field", "baker beach", "battery east"], url: "https://images.unsplash.com/photo-1643457345450-a2859cc47ed6?w=600&h=400&fit=crop", label: "The Presidio" },
+  { keywords: ["twin peaks sf", "twin peaks", "portola dr"], url: "https://images.unsplash.com/photo-1682037167909-96883f8392d5?w=600&h=400&fit=crop", label: "Twin Peaks" },
+  { keywords: ["golden gate", "golden gate bridge"], url: "https://images.unsplash.com/photo-1677722713120-fc79e3516343?w=600&h=400&fit=crop", label: "Golden Gate Bridge" },
+  { keywords: ["oakland", "lake merritt", "telegraph ave oakland", "jack london", "temescal oakland", "rockridge"], url: "https://images.unsplash.com/photo-1631165854010-bab7e2c19ee4?w=600&h=400&fit=crop", label: "Oakland" },
+  { keywords: ["berkeley", "telegraph ave berkeley", "university ave berkeley", "4th st berkeley", "uc berkeley"], url: "https://images.unsplash.com/photo-1631165854010-bab7e2c19ee4?w=600&h=400&fit=crop", label: "Berkeley" },
+  { keywords: ["sausalito", "bridgeway sausalito", "marin headlands"], url: "https://images.unsplash.com/photo-1643457345450-a2859cc47ed6?w=600&h=400&fit=crop", label: "Sausalito" },
 
-  // ═══ CHICAGO ═══
-  { keywords: ["chicago", "michigan ave", "loop", "magnificent mile", "wacker", "lake shore drive", "millennium park"], url: "https://images.unsplash.com/photo-1589691976473-35032b2c6bd3?w=600&h=400&fit=crop", label: "Chicago" },
-  { keywords: ["wicker park", "bucktown", "logan square", "milwaukee ave chicago"], url: "https://images.unsplash.com/photo-1589691976473-35032b2c6bd3?w=600&h=400&fit=crop", label: "Wicker Park, Chicago" },
-  { keywords: ["lincoln park", "old town chicago", "armitage", "halsted chicago"], url: "https://images.unsplash.com/photo-1589691976473-35032b2c6bd3?w=600&h=400&fit=crop", label: "Lincoln Park, Chicago" },
-  { keywords: ["pilsen", "west loop", "fulton market", "randolph st chicago"], url: "https://images.unsplash.com/photo-1589691976473-35032b2c6bd3?w=600&h=400&fit=crop", label: "West Loop, Chicago" },
+  // ═══ CHICAGO — Neighborhoods ═══
+  { keywords: ["chicago", "the loop", "state st chicago", "lake shore drive"], url: "https://images.unsplash.com/photo-1667045014018-681ed9ceda0d?w=600&h=400&fit=crop", label: "Chicago" },
+  { keywords: ["michigan ave", "magnificent mile", "mag mile", "n michigan"], url: "https://images.unsplash.com/photo-1623209371626-70a65bedcc30?w=600&h=400&fit=crop", label: "Magnificent Mile" },
+  { keywords: ["wicker park", "division st chicago", "damen ave", "milwaukee ave wicker"], url: "https://images.unsplash.com/photo-1589691976473-35032b2c6bd3?w=600&h=400&fit=crop", label: "Wicker Park" },
+  { keywords: ["bucktown", "armitage bucktown", "damen bucktown"], url: "https://images.unsplash.com/photo-1589691976473-35032b2c6bd3?w=600&h=400&fit=crop", label: "Bucktown" },
+  { keywords: ["logan square", "milwaukee ave logan", "logan blvd", "kedzie logan"], url: "https://images.unsplash.com/photo-1589691976473-35032b2c6bd3?w=600&h=400&fit=crop", label: "Logan Square" },
+  { keywords: ["lincoln park", "lincoln park chicago", "armitage ave", "halsted lincoln"], url: "https://images.unsplash.com/photo-1562533603-a722abee3396?w=600&h=400&fit=crop", label: "Lincoln Park" },
+  { keywords: ["old town chicago", "wells st old town", "second city"], url: "https://images.unsplash.com/photo-1562533603-a722abee3396?w=600&h=400&fit=crop", label: "Old Town" },
+  { keywords: ["west loop", "fulton market", "randolph st chicago", "halsted west loop", "green st chicago"], url: "https://images.unsplash.com/photo-1745920440787-8901c827d4be?w=600&h=400&fit=crop", label: "West Loop / Fulton Market" },
+  { keywords: ["pilsen", "18th st chicago", "pilsen chicago", "halsted pilsen"], url: "https://images.unsplash.com/photo-1745920440787-8901c827d4be?w=600&h=400&fit=crop", label: "Pilsen" },
+  { keywords: ["river north", "hubbard st", "ohio st chicago", "river north chicago"], url: "https://images.unsplash.com/photo-1667045014018-681ed9ceda0d?w=600&h=400&fit=crop", label: "River North" },
+  { keywords: ["gold coast", "rush st", "oak st chicago", "division st gold"], url: "https://images.unsplash.com/photo-1623209371626-70a65bedcc30?w=600&h=400&fit=crop", label: "Gold Coast" },
+  { keywords: ["lakeview", "wrigleyville", "clark st lakeview", "wrigley field", "belmont ave chicago"], url: "https://images.unsplash.com/photo-1758073028987-bae1f2013f13?w=600&h=400&fit=crop", label: "Lakeview / Wrigleyville" },
+  { keywords: ["andersonville", "clark st andersonville", "foster ave chicago"], url: "https://images.unsplash.com/photo-1562533603-a722abee3396?w=600&h=400&fit=crop", label: "Andersonville" },
+  { keywords: ["hyde park", "u of c", "university of chicago", "53rd st chicago", "harper ave"], url: "https://images.unsplash.com/photo-1622060920348-16e677caf61a?w=600&h=400&fit=crop", label: "Hyde Park" },
+  { keywords: ["uptown chicago", "broadway uptown", "argyle st chicago"], url: "https://images.unsplash.com/photo-1758073028987-bae1f2013f13?w=600&h=400&fit=crop", label: "Uptown" },
+  { keywords: ["bridgeport chicago", "chinatown chicago", "wentworth ave"], url: "https://images.unsplash.com/photo-1745920440787-8901c827d4be?w=600&h=400&fit=crop", label: "Chinatown / Bridgeport" },
+  { keywords: ["ravenswood", "ravenswood chicago", "lincoln square", "western ave lincoln sq"], url: "https://images.unsplash.com/photo-1562533603-a722abee3396?w=600&h=400&fit=crop", label: "Ravenswood / Lincoln Square" },
+  // Chicago Landmarks
+  { keywords: ["millennium park", "cloud gate", "the bean", "pritzker pavilion"], url: "https://images.unsplash.com/photo-1667940110529-7a0386b6bf92?w=600&h=400&fit=crop", label: "Millennium Park" },
+  { keywords: ["navy pier", "navy pier chicago"], url: "https://images.unsplash.com/photo-1643147018301-8b2ce3ef278e?w=600&h=400&fit=crop", label: "Navy Pier" },
+  { keywords: ["chicago riverwalk", "wacker drive", "riverwalk"], url: "https://images.unsplash.com/photo-1667045014018-681ed9ceda0d?w=600&h=400&fit=crop", label: "Chicago Riverwalk" },
+  { keywords: ["grant park", "buckingham fountain", "art institute", "museum campus"], url: "https://images.unsplash.com/photo-1667940110529-7a0386b6bf92?w=600&h=400&fit=crop", label: "Grant Park" },
+  { keywords: ["willis tower", "sears tower", "skydeck"], url: "https://images.unsplash.com/photo-1623209371626-70a65bedcc30?w=600&h=400&fit=crop", label: "Willis Tower" },
+  { keywords: ["606 trail", "bloomingdale trail", "606 chicago"], url: "https://images.unsplash.com/photo-1589691976473-35032b2c6bd3?w=600&h=400&fit=crop", label: "The 606 Trail" },
 
-  // ═══ MIAMI & SOUTH FLORIDA ═══
-  { keywords: ["miami", "south beach", "ocean drive", "collins ave", "brickell", "wynwood", "little havana", "calle ocho", "coconut grove", "coral gables"], url: "https://images.unsplash.com/photo-1720071160305-1aadaf1308bd?w=600&h=400&fit=crop", label: "Miami" },
-  { keywords: ["fort lauderdale", "ft lauderdale"], url: "https://images.unsplash.com/photo-1720071160305-1aadaf1308bd?w=600&h=400&fit=crop", label: "Fort Lauderdale" },
+  // ═══ MIAMI — Neighborhoods ═══
+  { keywords: ["miami", "downtown miami"], url: "https://images.unsplash.com/photo-1558951407-61704cdb0460?w=600&h=400&fit=crop", label: "Miami" },
+  { keywords: ["south beach", "ocean drive", "collins ave", "lummus park", "lincoln road", "lincoln rd"], url: "https://images.unsplash.com/photo-1720071160305-1ac400097b4d?w=600&h=400&fit=crop", label: "South Beach" },
+  { keywords: ["wynwood", "wynwood walls", "nw 2nd ave", "wynwood arts", "2nd ave wynwood"], url: "https://images.unsplash.com/photo-1567189988815-89377a3735a9?w=600&h=400&fit=crop", label: "Wynwood" },
+  { keywords: ["brickell", "brickell ave", "brickell city", "mary brickell"], url: "https://images.unsplash.com/photo-1558951407-61704cdb0460?w=600&h=400&fit=crop", label: "Brickell" },
+  { keywords: ["little havana", "calle ocho", "sw 8th st", "domino park", "maximo gomez"], url: "https://images.unsplash.com/photo-1548209570-75a4a6d34466?w=600&h=400&fit=crop", label: "Little Havana" },
+  { keywords: ["design district", "ne 40th st", "ne 41st st", "design district miami"], url: "https://images.unsplash.com/photo-1585421926133-8a3123b6d93c?w=600&h=400&fit=crop", label: "Design District" },
+  { keywords: ["coconut grove", "coco grove", "coconut grove miami", "bayshore dr grove", "cocowalk"], url: "https://images.unsplash.com/photo-1719265844062-c7f2f8e58e9b?w=600&h=400&fit=crop", label: "Coconut Grove" },
+  { keywords: ["coral gables", "miracle mile coral gables", "ponce de leon coral", "biltmore coral gables", "venetian pool"], url: "https://images.unsplash.com/photo-1748437323605-82e9dfd8cb89?w=600&h=400&fit=crop", label: "Coral Gables" },
+  { keywords: ["key biscayne", "crandon park", "bill baggs", "rickenbacker causeway"], url: "https://images.unsplash.com/photo-1697837019112-8adc10e7fee3?w=600&h=400&fit=crop", label: "Key Biscayne" },
+  { keywords: ["midtown miami", "edgewater", "biscayne blvd", "midtown miami shops"], url: "https://images.unsplash.com/photo-1558951407-61704cdb0460?w=600&h=400&fit=crop", label: "Midtown / Edgewater" },
+  { keywords: ["little haiti", "ne 2nd ave little haiti", "little river", "miami ironside"], url: "https://images.unsplash.com/photo-1567189988815-89377a3735a9?w=600&h=400&fit=crop", label: "Little Haiti / Little River" },
+  { keywords: ["north beach miami", "normandy", "surfside", "bal harbour", "north miami beach"], url: "https://images.unsplash.com/photo-1720071160305-1ac400097b4d?w=600&h=400&fit=crop", label: "North Beach / Surfside" },
+  { keywords: ["overtown", "nw 3rd ave overtown", "lyric theater"], url: "https://images.unsplash.com/photo-1558951407-61704cdb0460?w=600&h=400&fit=crop", label: "Overtown" },
+  { keywords: ["bayside", "bayside marketplace", "bayfront park", "american airlines arena"], url: "https://images.unsplash.com/photo-1558951407-61704cdb0460?w=600&h=400&fit=crop", label: "Bayside" },
+  { keywords: ["south miami", "sunset dr", "sunset place", "dadeland"], url: "https://images.unsplash.com/photo-1719265844062-c7f2f8e58e9b?w=600&h=400&fit=crop", label: "South Miami" },
+  { keywords: ["miami beach", "mid-beach", "41st st miami beach", "fontainebleau"], url: "https://images.unsplash.com/photo-1720071160305-1ac400097b4d?w=600&h=400&fit=crop", label: "Miami Beach" },
+  { keywords: ["vizcaya", "vizcaya museum"], url: "https://images.unsplash.com/photo-1748437323605-82e9dfd8cb89?w=600&h=400&fit=crop", label: "Vizcaya Museum" },
+  { keywords: ["fort lauderdale", "ft lauderdale", "las olas", "las olas blvd"], url: "https://images.unsplash.com/photo-1720071160305-1aadaf1308bd?w=600&h=400&fit=crop", label: "Fort Lauderdale" },
   { keywords: ["key west", "duval st", "mallory square"], url: "https://images.unsplash.com/photo-1659204674438-6996034014d4?w=600&h=400&fit=crop", label: "Key West" },
   { keywords: ["tampa", "ybor city", "channelside", "bayshore blvd"], url: "https://images.unsplash.com/photo-1580617332602-5a5ed8bc480f?w=600&h=400&fit=crop", label: "Tampa" },
   { keywords: ["orlando", "international drive", "lake eola"], url: "https://images.unsplash.com/photo-1692305019669-30926591bd25?w=600&h=400&fit=crop", label: "Orlando" },
   { keywords: ["jacksonville", "riverside jax", "san marco jacksonville"], url: "https://images.unsplash.com/photo-1699322753743-744c259994ec?w=600&h=400&fit=crop", label: "Jacksonville" },
 
-  // ═══ TEXAS ═══
-  { keywords: ["austin", "6th street", "south congress", "soco", "rainey st", "east austin", "barton springs"], url: "https://images.unsplash.com/photo-1666972120465-efebce20bf93?w=600&h=400&fit=crop", label: "Austin" },
+  // ═══ AUSTIN — Neighborhoods ═══
+  { keywords: ["austin", "downtown austin"], url: "https://images.unsplash.com/photo-1611005813863-08580fe0bfec?w=600&h=400&fit=crop", label: "Austin" },
+  { keywords: ["6th street", "sixth street", "dirty sixth", "6th st austin", "east 6th"], url: "https://images.unsplash.com/photo-1489364929346-a1d324ff812b?w=600&h=400&fit=crop", label: "6th Street" },
+  { keywords: ["south congress", "soco", "s congress ave", "south congress ave"], url: "https://images.unsplash.com/photo-1611005813863-08580fe0bfec?w=600&h=400&fit=crop", label: "South Congress (SoCo)" },
+  { keywords: ["rainey st", "rainey street", "rainey district"], url: "https://images.unsplash.com/photo-1686317195254-22f9f202810c?w=600&h=400&fit=crop", label: "Rainey Street" },
+  { keywords: ["east austin", "east side austin", "e 6th st", "e 7th st", "east cesar chavez"], url: "https://images.unsplash.com/photo-1489364929346-a1d324ff812b?w=600&h=400&fit=crop", label: "East Austin" },
+  { keywords: ["barton springs", "barton springs pool", "barton creek"], url: "https://images.unsplash.com/photo-1582908880177-0143c232bc71?w=600&h=400&fit=crop", label: "Barton Springs" },
+  { keywords: ["zilker", "zilker park", "zilker botanical"], url: "https://images.unsplash.com/photo-1558020070-dffb9243b3ac?w=600&h=400&fit=crop", label: "Zilker Park" },
+  { keywords: ["congress ave", "congress avenue", "congress bridge", "bat bridge"], url: "https://images.unsplash.com/photo-1589405190420-2a238bdd5b7e?w=600&h=400&fit=crop", label: "Congress Avenue Bridge" },
+  { keywords: ["lady bird lake", "town lake", "hike and bike trail", "boardwalk trail austin"], url: "https://images.unsplash.com/photo-1558020070-dffb9243b3ac?w=600&h=400&fit=crop", label: "Lady Bird Lake" },
+  { keywords: ["south lamar", "s lamar blvd", "south lamar austin"], url: "https://images.unsplash.com/photo-1611005813863-08580fe0bfec?w=600&h=400&fit=crop", label: "South Lamar" },
+  { keywords: ["north loop", "north loop blvd", "north loop austin"], url: "https://images.unsplash.com/photo-1632947450451-1b3511e4905f?w=600&h=400&fit=crop", label: "North Loop" },
+  { keywords: ["mueller", "mueller austin", "aldrich st", "barbara jordan blvd"], url: "https://images.unsplash.com/photo-1632947450451-1b3511e4905f?w=600&h=400&fit=crop", label: "Mueller" },
+  { keywords: ["domain", "the domain", "rock rose", "domain northside"], url: "https://images.unsplash.com/photo-1611005813863-08580fe0bfec?w=600&h=400&fit=crop", label: "The Domain" },
+  { keywords: ["texas capitol", "capitol building", "11th st austin", "congress ave capitol"], url: "https://images.unsplash.com/photo-1632947450451-1b3511e4905f?w=600&h=400&fit=crop", label: "Texas State Capitol" },
+  { keywords: ["south 1st", "south first", "s 1st st austin", "bouldin creek"], url: "https://images.unsplash.com/photo-1611005813863-08580fe0bfec?w=600&h=400&fit=crop", label: "South 1st / Bouldin" },
+  { keywords: ["clarksville", "west austin", "w 6th st", "west lynn"], url: "https://images.unsplash.com/photo-1489364929346-a1d324ff812b?w=600&h=400&fit=crop", label: "Clarksville" },
+  { keywords: ["ut austin", "university of texas", "guadalupe st", "the drag"], url: "https://images.unsplash.com/photo-1632947450451-1b3511e4905f?w=600&h=400&fit=crop", label: "UT Campus / The Drag" },
+  { keywords: ["east riverside", "riverside dr austin", "oltorf"], url: "https://images.unsplash.com/photo-1558020070-dffb9243b3ac?w=600&h=400&fit=crop", label: "East Riverside" },
+  { keywords: ["warehouse district", "4th st austin", "w 4th st"], url: "https://images.unsplash.com/photo-1489364929346-a1d324ff812b?w=600&h=400&fit=crop", label: "Warehouse District" },
+  { keywords: ["mount bonnell", "mt bonnell"], url: "https://images.unsplash.com/photo-1582908880177-0143c232bc71?w=600&h=400&fit=crop", label: "Mount Bonnell" },
   { keywords: ["houston", "montrose houston", "heights houston", "downtown houston", "galleria houston"], url: "https://images.unsplash.com/photo-1667754248024-e1e03e60eb72?w=600&h=400&fit=crop", label: "Houston" },
   { keywords: ["dallas", "deep ellum", "uptown dallas", "bishop arts", "lower greenville"], url: "https://images.unsplash.com/photo-1662576007101-ba8a6f5b7698?w=600&h=400&fit=crop", label: "Dallas" },
   { keywords: ["san antonio", "riverwalk", "river walk", "alamo", "pearl district sa"], url: "https://images.unsplash.com/photo-1692193483739-0e378f2eec45?w=600&h=400&fit=crop", label: "San Antonio" },
 
-  // ═══ PACIFIC NORTHWEST ═══
-  { keywords: ["seattle", "pike place", "capitol hill seattle", "fremont seattle", "ballard", "pioneer square", "space needle"], url: "https://images.unsplash.com/photo-1555817556-7d69c694f2dd?w=600&h=400&fit=crop", label: "Seattle" },
-  { keywords: ["portland", "pearl district portland", "alberta st", "hawthorne", "division st portland", "mississippi ave portland"], url: "https://images.unsplash.com/photo-1647490176399-446facfe1817?w=600&h=400&fit=crop", label: "Portland" },
+  // ═══ SEATTLE — Neighborhoods ═══
+  { keywords: ["seattle", "downtown seattle"], url: "https://images.unsplash.com/photo-1693748459960-0bf103ee06d0?w=600&h=400&fit=crop", label: "Seattle" },
+  { keywords: ["pike place", "pike place market", "pike st", "1st ave pike"], url: "https://images.unsplash.com/photo-1555817556-7d69c694f2dd?w=600&h=400&fit=crop", label: "Pike Place Market" },
+  { keywords: ["capitol hill seattle", "broadway seattle", "pike pine", "e pine st", "e pike st"], url: "https://images.unsplash.com/photo-1694138103681-ef3a39b7f2f8?w=600&h=400&fit=crop", label: "Capitol Hill" },
+  { keywords: ["fremont seattle", "fremont ave", "fremont troll", "n 35th st"], url: "https://images.unsplash.com/photo-1677532167447-8fe96d3d323c?w=600&h=400&fit=crop", label: "Fremont" },
+  { keywords: ["ballard", "ballard ave", "ballard locks", "market st ballard", "nw market st"], url: "https://images.unsplash.com/photo-1677532167447-8fe96d3d323c?w=600&h=400&fit=crop", label: "Ballard" },
+  { keywords: ["pioneer square", "1st ave south", "occidental", "yesler way"], url: "https://images.unsplash.com/photo-1741952863073-ddcb0250990c?w=600&h=400&fit=crop", label: "Pioneer Square" },
+  { keywords: ["space needle", "seattle center", "chihuly", "mopop", "key arena"], url: "https://images.unsplash.com/photo-1693748459960-0bf103ee06d0?w=600&h=400&fit=crop", label: "Space Needle / Seattle Center" },
+  { keywords: ["international district", "chinatown seattle", "id", "jackson st seattle", "king st seattle"], url: "https://images.unsplash.com/photo-1585979258006-97dd518650ae?w=600&h=400&fit=crop", label: "International District" },
+  { keywords: ["waterfront seattle", "elliott bay", "alaskan way", "pier 57", "pier 62", "great wheel"], url: "https://images.unsplash.com/photo-1737597741660-b4a019b2bc4d?w=600&h=400&fit=crop", label: "Seattle Waterfront" },
+  { keywords: ["university district", "u district", "university way", "the ave seattle", "uw"], url: "https://images.unsplash.com/photo-1707960051469-dc3fe4df0e30?w=600&h=400&fit=crop", label: "University District" },
+  { keywords: ["south lake union", "slu", "westlake ave", "terry ave", "amazon campus"], url: "https://images.unsplash.com/photo-1624341626921-988871b063b0?w=600&h=400&fit=crop", label: "South Lake Union" },
+  { keywords: ["queen anne", "lower queen anne", "upper queen anne", "kerry park", "queen anne ave"], url: "https://images.unsplash.com/photo-1693748459960-0bf103ee06d0?w=600&h=400&fit=crop", label: "Queen Anne" },
+  { keywords: ["wallingford", "45th st seattle", "n 45th st", "wallingford ave"], url: "https://images.unsplash.com/photo-1677532167447-8fe96d3d323c?w=600&h=400&fit=crop", label: "Wallingford" },
+  { keywords: ["georgetown seattle", "airport way", "georgetown art", "corson ave"], url: "https://images.unsplash.com/photo-1741952863073-ddcb0250990c?w=600&h=400&fit=crop", label: "Georgetown" },
+  { keywords: ["columbia city", "rainier ave", "columbia city seattle"], url: "https://images.unsplash.com/photo-1585979258006-97dd518650ae?w=600&h=400&fit=crop", label: "Columbia City" },
+  { keywords: ["belltown", "1st ave belltown", "2nd ave belltown", "3rd ave belltown"], url: "https://images.unsplash.com/photo-1737597741660-b4a019b2bc4d?w=600&h=400&fit=crop", label: "Belltown" },
+  { keywords: ["west seattle", "alki", "alki beach", "california ave sw", "junction west seattle"], url: "https://images.unsplash.com/photo-1737597741660-b4a019b2bc4d?w=600&h=400&fit=crop", label: "West Seattle / Alki" },
+  { keywords: ["greenwood", "phinney ridge", "greenwood ave", "phinney ave"], url: "https://images.unsplash.com/photo-1677532167447-8fe96d3d323c?w=600&h=400&fit=crop", label: "Greenwood / Phinney" },
+  { keywords: ["beacon hill seattle", "beacon ave", "light rail beacon"], url: "https://images.unsplash.com/photo-1585979258006-97dd518650ae?w=600&h=400&fit=crop", label: "Beacon Hill" },
+  { keywords: ["discovery park", "magnolia seattle"], url: "https://images.unsplash.com/photo-1693748459960-0bf103ee06d0?w=600&h=400&fit=crop", label: "Discovery Park / Magnolia" },
+  { keywords: ["gas works park", "gasworks"], url: "https://images.unsplash.com/photo-1624341626921-988871b063b0?w=600&h=400&fit=crop", label: "Gas Works Park" },
 
-  // ═══ SOUTHEAST ═══
-  { keywords: ["nashville", "broadway nashville", "music row", "east nashville", "12south", "gulch nashville"], url: "https://images.unsplash.com/photo-1693433582807-ab93ea7c297e?w=600&h=400&fit=crop", label: "Nashville" },
+  // ═══ PORTLAND — Neighborhoods ═══
+  { keywords: ["portland", "downtown portland"], url: "https://images.unsplash.com/photo-1586358143997-5aff6e27d87a?w=600&h=400&fit=crop", label: "Portland" },
+  { keywords: ["pearl district portland", "pearl district", "nw 13th", "nw 11th", "nw 10th", "jamison square"], url: "https://images.unsplash.com/photo-1567745576364-9526682df875?w=600&h=400&fit=crop", label: "Pearl District" },
+  { keywords: ["alberta st", "alberta arts", "ne alberta", "last thursday alberta"], url: "https://images.unsplash.com/photo-1763934385324-afc6d9bf93a9?w=600&h=400&fit=crop", label: "Alberta Arts District" },
+  { keywords: ["hawthorne", "se hawthorne", "hawthorne blvd", "hawthorne portland"], url: "https://images.unsplash.com/photo-1724506120722-3ff49e4fc960?w=600&h=400&fit=crop", label: "Hawthorne" },
+  { keywords: ["division st portland", "se division", "division street"], url: "https://images.unsplash.com/photo-1706844211030-823efbb8ac96?w=600&h=400&fit=crop", label: "Division Street" },
+  { keywords: ["mississippi ave portland", "mississippi ave", "n mississippi", "mississippi district"], url: "https://images.unsplash.com/photo-1724506120722-3ff49e4fc960?w=600&h=400&fit=crop", label: "Mississippi Ave" },
+  { keywords: ["sellwood", "sellwood moreland", "se 13th sellwood", "antique row"], url: "https://images.unsplash.com/photo-1545690106-900c7f92157c?w=600&h=400&fit=crop", label: "Sellwood-Moreland" },
+  { keywords: ["st johns", "st johns bridge", "cathedral park", "n lombard"], url: "https://images.unsplash.com/photo-1597123305153-057642e08ebe?w=600&h=400&fit=crop", label: "St. Johns" },
+  { keywords: ["nw 23rd", "nw 21st", "nob hill portland", "northwest portland"], url: "https://images.unsplash.com/photo-1567745576364-9526682df875?w=600&h=400&fit=crop", label: "NW 23rd / Nob Hill" },
+  { keywords: ["food cart", "food carts portland", "food pods", "food cart pod"], url: "https://images.unsplash.com/photo-1567955567073-fac7b0709975?w=600&h=400&fit=crop", label: "Portland Food Carts" },
+  { keywords: ["burnside", "e burnside", "w burnside", "burnside bridge", "sandy blvd"], url: "https://images.unsplash.com/photo-1586358143997-5aff6e27d87a?w=600&h=400&fit=crop", label: "Burnside" },
+  { keywords: ["belmont", "se belmont", "belmont st portland", "sunnyside portland"], url: "https://images.unsplash.com/photo-1724506120722-3ff49e4fc960?w=600&h=400&fit=crop", label: "Belmont / Sunnyside" },
+  { keywords: ["woodstock portland", "se woodstock", "reed college"], url: "https://images.unsplash.com/photo-1545690106-900c7f92157c?w=600&h=400&fit=crop", label: "Woodstock" },
+  { keywords: ["irvington", "ne broadway", "lloyd district", "lloyd center"], url: "https://images.unsplash.com/photo-1763934385324-afc6d9bf93a9?w=600&h=400&fit=crop", label: "Irvington / Lloyd" },
+  { keywords: ["foster powell", "se foster", "foster rd portland"], url: "https://images.unsplash.com/photo-1706844211030-823efbb8ac96?w=600&h=400&fit=crop", label: "Foster-Powell" },
+  { keywords: ["montavilla", "se stark montavilla", "82nd ave"], url: "https://images.unsplash.com/photo-1706844211030-823efbb8ac96?w=600&h=400&fit=crop", label: "Montavilla" },
+  { keywords: ["ladd's addition", "ladds addition", "se ladd"], url: "https://images.unsplash.com/photo-1724506120722-3ff49e4fc960?w=600&h=400&fit=crop", label: "Ladd's Addition" },
+  { keywords: ["forest park", "wildwood trail", "pittock mansion"], url: "https://images.unsplash.com/photo-1586358143997-5aff6e27d87a?w=600&h=400&fit=crop", label: "Forest Park" },
+  { keywords: ["waterfront park portland", "tom mccall", "steel bridge", "tilikum crossing", "hawthorne bridge"], url: "https://images.unsplash.com/photo-1586358143997-5aff6e27d87a?w=600&h=400&fit=crop", label: "Portland Waterfront" },
+  { keywords: ["powell's", "powell's books", "burnside powell's"], url: "https://images.unsplash.com/photo-1567745576364-9526682df875?w=600&h=400&fit=crop", label: "Powell's Books" },
+  { keywords: ["clinton", "se clinton", "clinton st portland", "division clinton"], url: "https://images.unsplash.com/photo-1706844211030-823efbb8ac96?w=600&h=400&fit=crop", label: "Clinton" },
+
+  // ═══ DENVER — Neighborhoods ═══
+  { keywords: ["denver", "downtown denver"], url: "https://images.unsplash.com/photo-1648441095877-90406e6ba04d?w=600&h=400&fit=crop", label: "Denver" },
+  { keywords: ["lodo", "lower downtown", "lodo denver", "blake st", "wazee st"], url: "https://images.unsplash.com/photo-1635294330731-d930fad4f25c?w=600&h=400&fit=crop", label: "LoDo" },
+  { keywords: ["rino", "rino denver", "river north art", "larimer st rino", "brighton blvd", "rino art district"], url: "https://images.unsplash.com/photo-1616810786646-edb4954f9686?w=600&h=400&fit=crop", label: "RiNo Art District" },
+  { keywords: ["capitol hill denver", "cap hill denver", "colfax ave", "e colfax", "broadway denver"], url: "https://images.unsplash.com/photo-1648441095877-90406e6ba04d?w=600&h=400&fit=crop", label: "Capitol Hill, Denver" },
+  { keywords: ["highland denver", "highlands", "lohi", "lower highland", "32nd ave denver", "tennyson st"], url: "https://images.unsplash.com/photo-1573297627466-6bed413a43f1?w=600&h=400&fit=crop", label: "Highland / LoHi" },
+  { keywords: ["larimer square", "larimer st"], url: "https://images.unsplash.com/photo-1635294330731-d930fad4f25c?w=600&h=400&fit=crop", label: "Larimer Square" },
+  { keywords: ["union station denver", "union station", "wynkoop st"], url: "https://images.unsplash.com/photo-1641176466598-4ff0f3143346?w=600&h=400&fit=crop", label: "Union Station" },
+  { keywords: ["wash park", "washington park", "wash park denver", "s gaylord st"], url: "https://images.unsplash.com/photo-1688420797350-81c42896d092?w=600&h=400&fit=crop", label: "Washington Park" },
+  { keywords: ["cherry creek", "cherry creek north", "2nd ave cherry creek", "3rd ave cherry creek"], url: "https://images.unsplash.com/photo-1648441095877-90406e6ba04d?w=600&h=400&fit=crop", label: "Cherry Creek" },
+  { keywords: ["five points", "five points denver", "welton st", "27th st denver"], url: "https://images.unsplash.com/photo-1616810786646-edb4954f9686?w=600&h=400&fit=crop", label: "Five Points" },
+  { keywords: ["baker denver", "s broadway denver", "south broadway"], url: "https://images.unsplash.com/photo-1688420797350-81c42896d092?w=600&h=400&fit=crop", label: "Baker" },
+  { keywords: ["uptown denver", "17th ave denver", "city park west"], url: "https://images.unsplash.com/photo-1648441095877-90406e6ba04d?w=600&h=400&fit=crop", label: "Uptown" },
+  { keywords: ["city park denver", "denver museum", "denver zoo"], url: "https://images.unsplash.com/photo-1688420797350-81c42896d092?w=600&h=400&fit=crop", label: "City Park" },
+  { keywords: ["sunnyside denver", "44th ave denver"], url: "https://images.unsplash.com/photo-1573297627466-6bed413a43f1?w=600&h=400&fit=crop", label: "Sunnyside" },
+  { keywords: ["sloan's lake", "sloans lake", "sloan lake denver"], url: "https://images.unsplash.com/photo-1648441095877-90406e6ba04d?w=600&h=400&fit=crop", label: "Sloan's Lake" },
+  { keywords: ["red rocks", "red rocks amphitheatre", "red rocks park", "morrison"], url: "https://images.unsplash.com/photo-1611469546863-08580fe0bfec?w=600&h=400&fit=crop", label: "Red Rocks" },
+  { keywords: ["golden", "golden colorado", "lookout mountain", "coors brewery"], url: "https://images.unsplash.com/photo-1611469546863-08580fe0bfec?w=600&h=400&fit=crop", label: "Golden" },
+  { keywords: ["boulder", "pearl st boulder", "chautauqua", "flatirons"], url: "https://images.unsplash.com/photo-1648441095877-90406e6ba04d?w=600&h=400&fit=crop", label: "Boulder" },
+  { keywords: ["santa fe arts", "santa fe dr denver", "art district on santa fe"], url: "https://images.unsplash.com/photo-1616810786646-edb4954f9686?w=600&h=400&fit=crop", label: "Santa Fe Arts District" },
+  { keywords: ["16th st mall", "16th street mall"], url: "https://images.unsplash.com/photo-1635294330731-d930fad4f25c?w=600&h=400&fit=crop", label: "16th Street Mall" },
+
+  // ═══ NASHVILLE — Neighborhoods ═══
+  { keywords: ["nashville", "downtown nashville"], url: "https://images.unsplash.com/photo-1616813603522-dbb172aff7a0?w=600&h=400&fit=crop", label: "Nashville" },
+  { keywords: ["broadway nashville", "lower broadway", "honky tonk", "broadway bars"], url: "https://images.unsplash.com/photo-1674340480502-acf2fe1ef1d3?w=600&h=400&fit=crop", label: "Lower Broadway" },
+  { keywords: ["east nashville", "five points nashville", "gallatin ave", "fatherland st", "shelby ave"], url: "https://images.unsplash.com/photo-1674340480502-acf2fe1ef1d3?w=600&h=400&fit=crop", label: "East Nashville" },
+  { keywords: ["12south", "12 south", "12th ave south", "12th south"], url: "https://images.unsplash.com/photo-1594731940920-0a37e4eb3f54?w=600&h=400&fit=crop", label: "12South" },
+  { keywords: ["the gulch", "gulch nashville", "gulch", "11th ave south", "division st gulch"], url: "https://images.unsplash.com/photo-1570313647053-f82f531214d2?w=600&h=400&fit=crop", label: "The Gulch" },
+  { keywords: ["music row", "music row nashville", "16th ave south", "17th ave south", "music square"], url: "https://images.unsplash.com/photo-1674340488202-a15f98044c09?w=600&h=400&fit=crop", label: "Music Row" },
+  { keywords: ["germantown nashville", "germantown", "4th ave north", "5th ave north", "monroe st nashville"], url: "https://images.unsplash.com/photo-1616813603522-dbb172aff7a0?w=600&h=400&fit=crop", label: "Germantown" },
+  { keywords: ["centennial park", "parthenon nashville", "west end ave"], url: "https://images.unsplash.com/photo-1646187548162-6ab403781597?w=600&h=400&fit=crop", label: "Centennial Park" },
+  { keywords: ["ryman", "ryman auditorium", "mother church"], url: "https://images.unsplash.com/photo-1674340488202-a15f98044c09?w=600&h=400&fit=crop", label: "Ryman Auditorium" },
+  { keywords: ["shelby park", "shelby bottoms", "shelby greenway"], url: "https://images.unsplash.com/photo-1689123518229-5c7584b89ad2?w=600&h=400&fit=crop", label: "Shelby Park" },
+  { keywords: ["pedestrian bridge", "john seigenthaler", "walking bridge nashville"], url: "https://images.unsplash.com/photo-1616813603522-dbb172aff7a0?w=600&h=400&fit=crop", label: "Pedestrian Bridge" },
+  { keywords: ["midtown nashville", "vanderbilt", "elliston place", "west end"], url: "https://images.unsplash.com/photo-1594731940920-0a37e4eb3f54?w=600&h=400&fit=crop", label: "Midtown / Vanderbilt" },
+  { keywords: ["marathon village", "marathon motorworks"], url: "https://images.unsplash.com/photo-1570313647053-f82f531214d2?w=600&h=400&fit=crop", label: "Marathon Village" },
+  { keywords: ["sobro", "south of broadway", "korean veterans blvd"], url: "https://images.unsplash.com/photo-1674340480502-acf2fe1ef1d3?w=600&h=400&fit=crop", label: "SoBro" },
+  { keywords: ["the nations", "51st ave", "nations nashville", "charlotte pike"], url: "https://images.unsplash.com/photo-1594731940920-0a37e4eb3f54?w=600&h=400&fit=crop", label: "The Nations" },
+  { keywords: ["sylvan park", "murphy rd", "charlotte ave nashville"], url: "https://images.unsplash.com/photo-1594731940920-0a37e4eb3f54?w=600&h=400&fit=crop", label: "Sylvan Park" },
+  { keywords: ["berry hill", "berry hill nashville", "bransford ave"], url: "https://images.unsplash.com/photo-1570313647053-f82f531214d2?w=600&h=400&fit=crop", label: "Berry Hill" },
+  { keywords: ["wedgewood houston", "wedgewood", "houston st nashville", "wedge-hous"], url: "https://images.unsplash.com/photo-1570313647053-f82f531214d2?w=600&h=400&fit=crop", label: "Wedgewood-Houston" },
+  { keywords: ["opryland", "grand ole opry", "opry mills", "briley parkway"], url: "https://images.unsplash.com/photo-1674340488202-a15f98044c09?w=600&h=400&fit=crop", label: "Grand Ole Opry" },
+  { keywords: ["belle meade", "belle meade blvd", "harding pike"], url: "https://images.unsplash.com/photo-1689123518229-5c7584b89ad2?w=600&h=400&fit=crop", label: "Belle Meade" },
+  { keywords: ["percy warner", "warner park", "edwin warner"], url: "https://images.unsplash.com/photo-1689123518229-5c7584b89ad2?w=600&h=400&fit=crop", label: "Warner Parks" },
   { keywords: ["atlanta", "midtown atlanta", "buckhead", "little five points", "decatur", "ponce de leon", "beltline"], url: "https://images.unsplash.com/photo-1656301653599-2f32abf2a7c8?w=600&h=400&fit=crop", label: "Atlanta" },
   { keywords: ["new orleans", "french quarter", "bourbon st", "magazine st", "frenchmen", "garden district", "bywater", "marigny"], url: "https://images.unsplash.com/photo-1655070043837-ad2146f8963d?w=600&h=400&fit=crop", label: "New Orleans" },
   { keywords: ["savannah", "broughton st", "forsyth park", "river st savannah"], url: "https://images.unsplash.com/photo-1492889971304-ac16ab4a4a5a?w=600&h=400&fit=crop", label: "Savannah" },
@@ -361,7 +522,6 @@ const LOCATION_PHOTO_BANK: LocationEntry[] = [
   { keywords: ["buffalo", "elmwood village", "allentown buffalo", "canalside"], url: "https://images.unsplash.com/photo-1763005469932-5560247b93ca?w=600&h=400&fit=crop", label: "Buffalo" },
 
   // ═══ MIDWEST ═══
-  { keywords: ["denver", "lodo", "rino denver", "capitol hill denver", "larimer square", "highland denver"], url: "https://images.unsplash.com/photo-1635294330731-d930fad4f25c?w=600&h=400&fit=crop", label: "Denver" },
   { keywords: ["minneapolis", "uptown minneapolis", "northeast minneapolis", "north loop", "mill district"], url: "https://images.unsplash.com/photo-1600296344597-1aadaf1308bd?w=600&h=400&fit=crop", label: "Minneapolis" },
   { keywords: ["detroit", "corktown", "midtown detroit", "eastern market detroit", "woodward ave"], url: "https://images.unsplash.com/photo-1463414689943-2aca18b2242b?w=600&h=400&fit=crop", label: "Detroit" },
   { keywords: ["milwaukee", "third ward", "east side milwaukee", "walker's point", "bay view milwaukee"], url: "https://images.unsplash.com/photo-1648143351120-26d653606963?w=600&h=400&fit=crop", label: "Milwaukee" },
@@ -381,8 +541,34 @@ const LOCATION_PHOTO_BANK: LocationEntry[] = [
   { keywords: ["albuquerque", "old town albuquerque", "nob hill abq"], url: "https://images.unsplash.com/photo-1581616845744-c3fa77368c57?w=600&h=400&fit=crop", label: "Albuquerque" },
   { keywords: ["boise", "downtown boise", "hyde park boise"], url: "https://images.unsplash.com/photo-1739999755964-00c65a570a06?w=600&h=400&fit=crop", label: "Boise" },
 
+  // ═══ SAN DIEGO — Neighborhoods ═══
+  { keywords: ["san diego", "downtown san diego"], url: "https://images.unsplash.com/photo-1717299215165-f4314f282bf2?w=600&h=400&fit=crop", label: "San Diego" },
+  { keywords: ["gaslamp", "gaslamp quarter", "5th ave gaslamp", "gaslamp sd", "island ave"], url: "https://images.unsplash.com/photo-1717299215165-f4314f282bf2?w=600&h=400&fit=crop", label: "Gaslamp Quarter" },
+  { keywords: ["la jolla", "la jolla cove", "la jolla shores", "prospect st la jolla", "torrey pines"], url: "https://images.unsplash.com/photo-1659692917561-76f375dc418c?w=600&h=400&fit=crop", label: "La Jolla" },
+  { keywords: ["pacific beach", "pb", "garnet ave", "mission blvd pb", "pacific beach boardwalk"], url: "https://images.unsplash.com/photo-1592364261794-1d1aa1d6d244?w=600&h=400&fit=crop", label: "Pacific Beach" },
+  { keywords: ["balboa park", "el prado", "spanish village", "san diego zoo"], url: "https://images.unsplash.com/photo-1767778607279-dcacb52f3387?w=600&h=400&fit=crop", label: "Balboa Park" },
+  { keywords: ["north park sd", "north park", "30th st", "university ave north park"], url: "https://images.unsplash.com/photo-1588634854385-1c05cd8faf4c?w=600&h=400&fit=crop", label: "North Park" },
+  { keywords: ["ocean beach", "ob", "newport ave", "ob pier", "sunset cliffs"], url: "https://images.unsplash.com/photo-1667235747115-7cbf5920f719?w=600&h=400&fit=crop", label: "Ocean Beach" },
+  { keywords: ["little italy sd", "little italy san diego", "india st", "w date st", "piazza della famiglia"], url: "https://images.unsplash.com/photo-1737231804649-082380dd229b?w=600&h=400&fit=crop", label: "Little Italy, SD" },
+  { keywords: ["mission beach", "belmont park", "mission bay", "mission beach boardwalk"], url: "https://images.unsplash.com/photo-1454391304352-2bf4678b1a7a?w=600&h=400&fit=crop", label: "Mission Beach / Bay" },
+  { keywords: ["coronado", "coronado island", "coronado bridge", "orange ave coronado", "hotel del coronado"], url: "https://images.unsplash.com/photo-1641353190354-a1d4c14df4da?w=600&h=400&fit=crop", label: "Coronado" },
+  { keywords: ["hillcrest sd", "hillcrest", "university ave hillcrest", "5th ave hillcrest"], url: "https://images.unsplash.com/photo-1588634854385-1c05cd8faf4c?w=600&h=400&fit=crop", label: "Hillcrest" },
+  { keywords: ["east village sd", "east village san diego", "park blvd sd", "petco park", "j st sd"], url: "https://images.unsplash.com/photo-1717299215165-f4314f282bf2?w=600&h=400&fit=crop", label: "East Village, SD" },
+  { keywords: ["old town sd", "old town san diego", "san diego ave", "heritage park"], url: "https://images.unsplash.com/photo-1732597041894-b1d2f9f1ac8d?w=600&h=400&fit=crop", label: "Old Town" },
+  { keywords: ["seaport village", "harbor dr", "embarcadero sd", "sd waterfront", "maritime museum"], url: "https://images.unsplash.com/photo-1732597041894-b1d2f9f1ac8d?w=600&h=400&fit=crop", label: "Seaport Village / Harbor" },
+  { keywords: ["del mar", "del mar fairgrounds", "15th st del mar", "camino del mar"], url: "https://images.unsplash.com/photo-1659692917561-76f375dc418c?w=600&h=400&fit=crop", label: "Del Mar" },
+  { keywords: ["encinitas", "moonlight beach", "s coast hwy 101 encinitas", "leucadia"], url: "https://images.unsplash.com/photo-1667235747115-7cbf5920f719?w=600&h=400&fit=crop", label: "Encinitas" },
+  { keywords: ["solana beach", "cedros ave", "cedros design district", "fletcher cove"], url: "https://images.unsplash.com/photo-1667235747115-7cbf5920f719?w=600&h=400&fit=crop", label: "Solana Beach" },
+  { keywords: ["point loma", "cabrillo monument", "shelter island", "liberty station"], url: "https://images.unsplash.com/photo-1732597041894-b1d2f9f1ac8d?w=600&h=400&fit=crop", label: "Point Loma" },
+  { keywords: ["carlsbad", "carlsbad village", "carlsbad blvd", "flower fields", "legoland"], url: "https://images.unsplash.com/photo-1667235747115-7cbf5920f719?w=600&h=400&fit=crop", label: "Carlsbad" },
+  { keywords: ["south park sd", "south park san diego", "fern st", "30th st south park"], url: "https://images.unsplash.com/photo-1588634854385-1c05cd8faf4c?w=600&h=400&fit=crop", label: "South Park, SD" },
+  { keywords: ["normal heights", "adams ave", "adams ave normal heights"], url: "https://images.unsplash.com/photo-1588634854385-1c05cd8faf4c?w=600&h=400&fit=crop", label: "Normal Heights" },
+  { keywords: ["kensington sd", "kensington san diego", "adams ave kensington"], url: "https://images.unsplash.com/photo-1588634854385-1c05cd8faf4c?w=600&h=400&fit=crop", label: "Kensington" },
+  { keywords: ["ucsd", "uc san diego", "gilman dr", "la jolla village"], url: "https://images.unsplash.com/photo-1659692917561-76f375dc418c?w=600&h=400&fit=crop", label: "UCSD / La Jolla Village" },
+  { keywords: ["mission hills", "washington st sd", "goldfinch st"], url: "https://images.unsplash.com/photo-1717299215165-f4314f282bf2?w=600&h=400&fit=crop", label: "Mission Hills" },
+  { keywords: ["barrio logan", "chicano park", "logan ave", "barrio art"], url: "https://images.unsplash.com/photo-1717299215165-f4314f282bf2?w=600&h=400&fit=crop", label: "Barrio Logan" },
+
   // ═══ CALIFORNIA (other) ═══
-  { keywords: ["san diego", "gaslamp", "north park sd", "hillcrest sd", "pacific beach", "la jolla", "balboa park"], url: "https://images.unsplash.com/photo-1710289223483-d026a20233dc?w=600&h=400&fit=crop", label: "San Diego" },
   { keywords: ["sacramento", "midtown sacramento", "old sacramento"], url: "https://images.unsplash.com/photo-1723066012173-e902882779cd?w=600&h=400&fit=crop", label: "Sacramento" },
   { keywords: ["santa barbara", "state st santa barbara", "funk zone", "stearns wharf"], url: "https://images.unsplash.com/photo-1646628490314-6b10b591d049?w=600&h=400&fit=crop", label: "Santa Barbara" },
 
@@ -1057,20 +1243,20 @@ export function CreateTrailPage() {
       {/* ─── Fixed Back Button ─── */}
       <button
         onClick={() => navigate(-1)}
-        className="fixed top-4 left-4 z-50 bg-[rgba(30,30,30,0.35)] backdrop-blur-md rounded-full p-2 border border-white/40 max-w-[430px]"
-        style={{ left: "max(16px, calc(50% - 215px + 16px))" }}
+        className="fixed top-4 left-4 z-50 bg-[rgba(30,30,30,0.35)] backdrop-blur-md rounded-full p-2 border border-white/40 lg:sticky lg:top-4 lg:left-4 lg:ml-6 lg:mt-4 lg:mb-[-48px] lg:bg-white lg:border-gray-200 lg:z-20"
       >
-        <ChevronLeft size={20} className="text-white" />
+        <ChevronLeft size={20} className="text-white lg:text-gray-700" />
       </button>
 
       {/* ─── Gradient Header ─── */}
       <div
-        className="px-4 pt-4 pb-8"
+        className="px-4 lg:px-8 pt-4 pb-8"
         style={{
           backgroundImage:
             "linear-gradient(126.8deg, rgb(146, 190, 255) 0%, rgb(190, 236, 255) 24%, rgb(242, 189, 151) 55%, rgb(255, 222, 222) 100%)",
         }}
       >
+        <div className="lg:max-w-3xl lg:mx-auto">
         <div className="flex items-center justify-center mb-3 pt-1">
           <div className="w-9" />
           <h2 className="text-[16px] font-['Poppins'] font-semibold text-gray-900 flex-1 text-center">
@@ -1081,10 +1267,12 @@ export function CreateTrailPage() {
         <p className="text-[13px] font-['Poppins'] text-gray-700 text-center">
           Design your trail, add stops, and share it with the world
         </p>
+        </div>
       </div>
 
       {/* ─── Form Body ─── */}
-      <div className="px-4 -mt-4 bg-[#f8f8fa] rounded-t-[24px] relative z-10 pt-6 pb-32">
+      <div className="px-4 lg:px-8 -mt-4 bg-[#f8f8fa] rounded-t-[24px] relative z-10 pt-6 pb-32 lg:pb-12">
+        <div className="lg:max-w-3xl lg:mx-auto">
 
         {/* ━━━ Section: Cover Media ━━━ */}
         <div className="mb-6">
@@ -1749,8 +1937,10 @@ export function CreateTrailPage() {
         )}
       </div>
 
+      </div>
       {/* ─── Publish CTA ─── */}
-      <div className="fixed bottom-0 left-0 right-0 w-full max-w-[430px] mx-auto p-4 bg-white/95 backdrop-blur-md border-t border-gray-100 z-20">
+      <div className="fixed bottom-0 left-0 right-0 w-full max-w-[430px] lg:max-w-none lg:static lg:w-full mx-auto p-4 lg:p-0 lg:px-8 lg:pb-8 bg-white/95 lg:bg-transparent backdrop-blur-md lg:backdrop-blur-none border-t border-gray-100 lg:border-0 z-20 lg:z-auto">
+        <div className="lg:max-w-3xl lg:mx-auto">
         <button
           onClick={handlePublish}
           disabled={!canPublish || isPublishing}
@@ -1779,6 +1969,7 @@ export function CreateTrailPage() {
             Add a title, description, and at least 1 stop with name & address
           </p>
         )}
+        </div>
       </div>
 
       {/* ─── Fullscreen Media Viewer ─── */}

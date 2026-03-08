@@ -1,5 +1,6 @@
 import { Outlet, useLocation } from "react-router";
 import { BottomNav } from "./BottomNav";
+import { SidebarNav } from "./SidebarNav";
 import { OnboardingFlow } from "./OnboardingFlow";
 import { AuthPage } from "./AuthPage";
 import { useUser, UserProvider } from "../data/userStore";
@@ -20,11 +21,20 @@ function LayoutInner() {
   const isCreateTrailPage = location.pathname === "/create-trail";
   const isExplorePage = location.pathname === "/explore";
 
-  // New user — hasn't finished onboarding yet (includes auth in the middle)
+  const showBottomNav =
+    !hideNav &&
+    !isCompletionPage &&
+    !isCheckoutPage &&
+    !isTrailDetailPage &&
+    !isFullScreenMap &&
+    !isCreateTrailPage &&
+    !isExplorePage;
+
+  // New user — hasn't finished onboarding yet
   if (!user.onboarded) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <div className="w-full max-w-[430px] min-h-screen bg-white relative shadow-2xl mx-auto">
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center lg:bg-white lg:block">
+        <div className="w-full max-w-[430px] min-h-screen bg-white relative shadow-2xl mx-auto lg:max-w-none lg:shadow-none">
           <OnboardingFlow />
         </div>
       </div>
@@ -34,8 +44,8 @@ function LayoutInner() {
   // Returning user who logged out — show auth only
   if (!user.isLoggedIn) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <div className="w-full max-w-[430px] min-h-screen bg-white relative shadow-2xl mx-auto">
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center lg:bg-white lg:block">
+        <div className="w-full max-w-[430px] min-h-screen bg-white relative shadow-2xl mx-auto lg:max-w-none lg:shadow-none">
           <AuthPage />
         </div>
       </div>
@@ -43,20 +53,33 @@ function LayoutInner() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <div className="w-full max-w-[430px] min-h-screen bg-white relative shadow-2xl mx-auto overflow-hidden">
-        {/* Main Content */}
-        <main className="min-h-screen">
-          <Outlet />
-        </main>
+    <>
+      {/* ═══ MOBILE LAYOUT (< lg) ═══ */}
+      <div className="lg:hidden min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="w-full max-w-[430px] min-h-screen bg-white relative shadow-2xl mx-auto overflow-hidden">
+          <main className="min-h-screen">
+            <Outlet />
+          </main>
+          {showBottomNav && <BottomNav />}
+          <ToastContainer />
+        </div>
+      </div>
 
-        {/* Mobile Bottom Nav */}
-        {!hideNav && !isCompletionPage && !isCheckoutPage && !isTrailDetailPage && !isFullScreenMap && !isCreateTrailPage && !isExplorePage && <BottomNav />}
+      {/* ═══ DESKTOP LAYOUT (≥ lg) ═══ */}
+      <div className="hidden lg:flex min-h-screen bg-[#f5f6f8]">
+        {/* Fixed sidebar */}
+        <SidebarNav />
 
-        {/* Toast notifications */}
+        {/* Scrollable content area */}
+        <div className="flex-1 min-h-screen overflow-y-auto">
+          <main className="min-h-screen">
+            <Outlet />
+          </main>
+        </div>
+
         <ToastContainer />
       </div>
-    </div>
+    </>
   );
 }
 

@@ -182,7 +182,7 @@ function createRouter() {
 }
 
 export default function App() {
-  // Force recompile
+  // Force clean recompile v2
   const router = useMemo(() => createRouter(), []);
   return <RouterProvider router={router} />;
 }

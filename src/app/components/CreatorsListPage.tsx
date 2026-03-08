@@ -23,13 +23,13 @@ export function CreatorsListPage() {
     <div className="h-screen overflow-y-auto bg-gray-50">
       {/* Header */}
       <div
-        className="sticky top-0 z-10 px-4 pt-4 pb-4"
+        className="sticky top-0 z-10 px-4 lg:px-8 pt-4 pb-4"
         style={{
           backgroundImage:
             "linear-gradient(126.8deg, rgb(146, 190, 255) 0%, rgb(190, 236, 255) 24%, rgb(242, 189, 151) 55%, rgb(255, 222, 222) 100%)",
         }}
       >
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 lg:max-w-5xl lg:mx-auto">
           <button
             onClick={() => navigate(-1)}
             className="w-9 h-9 rounded-full bg-white/30 backdrop-blur-sm border border-white/40 flex items-center justify-center"
@@ -48,8 +48,8 @@ export function CreatorsListPage() {
       </div>
 
       {/* Creator Cards */}
-      <div className="px-4 pt-2 pb-28">
-        <div className="flex flex-col gap-2.5">
+      <div className="px-4 lg:px-8 pt-2 pb-28 lg:pb-12">
+        <div className="flex flex-col lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-2.5 lg:gap-4 lg:max-w-5xl lg:mx-auto">
           {creators.map((creator) => {
             const creatorTrails = trails.filter(
               (t) => t.hostHandle === creator.handle

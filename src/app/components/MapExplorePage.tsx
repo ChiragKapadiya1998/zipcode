@@ -401,8 +401,8 @@ export function MapExplorePage() {
           />
 
           {/* Drawer */}
-          <div className="fixed bottom-0 left-0 right-0 z-[3001] flex justify-center">
-            <div className="w-full max-w-[430px] bg-white rounded-t-[24px] px-5 pt-3 pb-8 animate-in slide-in-from-bottom duration-300">
+          <div className="fixed bottom-0 left-0 right-0 z-[3001] flex items-end lg:items-center justify-center lg:inset-0">
+            <div className="w-full max-w-[430px] lg:max-w-[520px] bg-white rounded-t-[24px] lg:rounded-[24px] px-5 pt-3 pb-8 animate-in slide-in-from-bottom duration-300">
               {/* Handle */}
               <div className="flex justify-center mb-4">
                 <div className="w-10 h-1 rounded-full bg-gray-200" />

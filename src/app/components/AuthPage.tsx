@@ -26,14 +26,17 @@ import {
   Dumbbell,
   UtensilsCrossed,
   Bike,
+  MapPin,
 } from "lucide-react";
 import { useUser } from "../data/userStore";
 import { useNavigate } from "react-router";
+import { CityUnlockLogo } from "./CityUnlockLogo";
 import {
   fetchInstagramProfile,
   formatCount,
   type InstagramProfile,
 } from "../data/instagramService";
+import { ImageWithFallback } from "./figma/ImageWithFallback";
 
 type AuthMode = "login" | "signup";
 type AuthStep = "auth" | "otp" | "interests";
@@ -53,6 +56,83 @@ const CTA_GRADIENT =
   "linear-gradient(102deg, rgb(0, 5, 30) 12%, rgb(3, 3, 192) 39%, rgb(56, 125, 236) 84%, rgb(133, 200, 255) 101%)";
 const GLASS_BG =
   "linear-gradient(145deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.08) 100%)";
+
+/** Desktop split-screen wrapper — reused by every return branch */
+function AuthDesktopShell({
+  children,
+  stepLabel,
+}: {
+  children: React.ReactNode;
+  stepLabel: string;
+}) {
+  return (
+    <div className="min-h-screen bg-white flex flex-col lg:flex-row">
+      {/* ═══ DESKTOP LEFT BRANDING PANEL ═══ */}
+      <div
+        className="hidden lg:flex lg:w-[44%] lg:min-h-screen lg:sticky lg:top-0 lg:flex-col lg:items-center lg:justify-center lg:px-10 lg:py-16 lg:relative lg:overflow-hidden"
+        style={{ backgroundImage: CTA_GRADIENT }}
+      >
+        {/* Background image overlay */}
+        <div className="absolute inset-0 opacity-10">
+          <ImageWithFallback
+            src="https://images.unsplash.com/photo-1682537531866-40d3aaca9b76?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmcmllbmRzJTIwZXhwbG9yaW5nJTIwdXJiYW4lMjBjaXR5JTIwdHJhaWwlMjB3YWxraW5nfGVufDF8fHx8MTc3MjUyNDAxM3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+            alt=""
+            className="w-full h-full object-cover"
+          />
+        </div>
+
+        {/* Decorative glow */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[300px] h-[300px] rounded-full bg-blue-400/20 blur-[100px]" />
+
+        <div className="relative z-10 flex flex-col items-center text-center w-full max-w-[340px]">
+          {/* Logo */}
+          <CityUnlockLogo layout="stacked" size={52} variant="onGradient" />
+
+          {/* Tagline */}
+          <p className="font-['Poppins'] text-[15px] text-white/70 mt-3 leading-relaxed max-w-[280px]">
+            Discover creator-led trail experiences in your city
+          </p>
+
+          {/* Divider line */}
+          <div className="w-12 h-px bg-white/20 mt-8 mb-8" />
+
+          {/* Feature highlights */}
+          <div className="flex flex-col gap-3 w-full">
+            {[
+              { icon: Compass, text: "Resume your trail adventures" },
+              { icon: MapPin, text: "Discover new creator-led experiences" },
+              { icon: Sparkles, text: "Track your points & badges" },
+            ].map((f, i) => (
+              <div
+                key={i}
+                className="flex items-center gap-3.5 bg-white/10 backdrop-blur-sm rounded-2xl px-5 py-3.5"
+              >
+                <div className="w-9 h-9 rounded-xl bg-white/15 flex items-center justify-center shrink-0">
+                  <f.icon size={17} className="text-white" />
+                </div>
+                <span className="font-['Poppins'] text-[13px] text-white/90 text-left leading-snug">
+                  {f.text}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* Step pill */}
+          <div className="mt-8 bg-white/10 backdrop-blur-sm rounded-full px-6 py-2.5 border border-white/10">
+            <span className="font-['Poppins'] text-[12px] text-white/70 tracking-wide uppercase">
+              {stepLabel}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* ═══ CONTENT AREA ═══ */}
+      <div className="flex-1 flex flex-col lg:overflow-y-auto lg:justify-center">
+        {children}
+      </div>
+    </div>
+  );
+}
 
 export function AuthPage() {
   const { signup, login, updateUser } = useUser();
@@ -277,22 +357,20 @@ export function AuthPage() {
   // ═══════════════════════════════════════════════
   if (forgotPassword) {
     return (
-      <div className="min-h-screen bg-white flex flex-col">
+      <AuthDesktopShell stepLabel="Reset Password">
+      <div className="min-h-screen bg-white flex flex-col lg:min-h-0">
         <div
-          className="relative h-[220px] overflow-hidden"
+          className="relative h-[220px] overflow-hidden lg:hidden"
           style={{ backgroundImage: CTA_GRADIENT }}
         >
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white" />
           <div className="absolute top-7 left-0 right-0 flex flex-col items-center">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-3" style={{ background: GLASS_BG }}>
-              <Compass size={28} className="text-white" />
-            </div>
-            <h1 className="font-['Poppins'] text-[24px] font-semibold text-white">CityUnlock</h1>
-            <p className="font-['Poppins'] text-[13px] text-white/80 mt-0.5">Creator-led trail experiences</p>
+            <CityUnlockLogo layout="stacked" size={44} variant="onGradient" />
+            <p className="font-['Poppins'] text-[13px] text-white/80 mt-1.5">Creator-led trail experiences</p>
           </div>
         </div>
 
-        <div className="flex-1 px-6 -mt-6 relative z-10">
+        <div className="flex-1 px-6 -mt-6 relative z-10 lg:mt-0 lg:pt-12 lg:max-w-[480px] lg:mx-auto lg:w-full">
           <button onClick={exitForgotPassword} className="flex items-center gap-1.5 mb-6 text-[14px] font-['Poppins'] font-medium text-blue-600 hover:text-blue-700 transition-colors">
             <ArrowLeft size={16} />
             Back to Login
@@ -341,6 +419,7 @@ export function AuthPage() {
           )}
         </div>
       </div>
+      </AuthDesktopShell>
     );
   }
 
@@ -349,8 +428,9 @@ export function AuthPage() {
   // ═══════════════════════════════════════════════
   if (authStep === "otp") {
     return (
-      <div className="min-h-screen bg-white flex flex-col">
-        <div className="relative h-[180px] overflow-hidden shrink-0" style={{ backgroundImage: CTA_GRADIENT }}>
+      <AuthDesktopShell stepLabel="Verify Email">
+      <div className="min-h-screen bg-white flex flex-col lg:min-h-0">
+        <div className="relative h-[180px] overflow-hidden shrink-0 lg:hidden" style={{ backgroundImage: CTA_GRADIENT }}>
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white" />
           <div className="absolute top-5 left-0 right-0 flex flex-col items-center">
             <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-2" style={{ background: GLASS_BG }}>
@@ -361,7 +441,7 @@ export function AuthPage() {
           </div>
         </div>
 
-        <div className="flex-1 px-6 -mt-4 relative z-10 pb-6">
+        <div className="flex-1 px-6 -mt-4 relative z-10 pb-6 lg:mt-0 lg:px-12 lg:py-8 lg:max-w-[520px] lg:mx-auto lg:w-full">
           {otpVerified ? (
             <div className="flex flex-col items-center text-center pt-8 animate-in fade-in zoom-in-95 duration-500">
               <div className="w-20 h-20 rounded-full bg-green-50 flex items-center justify-center mb-4">
@@ -443,6 +523,7 @@ export function AuthPage() {
           )}
         </div>
       </div>
+      </AuthDesktopShell>
     );
   }
 
@@ -451,8 +532,9 @@ export function AuthPage() {
   // ═══════════════════════════════════════════════
   if (authStep === "interests") {
     return (
-      <div className="min-h-screen bg-white flex flex-col">
-        <div className="flex-1 px-6 pt-6 overflow-y-auto pb-6 animate-in fade-in duration-500">
+      <AuthDesktopShell stepLabel="Personalize">
+      <div className="min-h-screen bg-white flex flex-col lg:min-h-0">
+        <div className="flex-1 px-6 pt-6 overflow-y-auto pb-6 animate-in fade-in duration-500 lg:px-12 lg:py-8 lg:max-w-[640px] lg:mx-auto lg:w-full">
           <h2 className="font-['Poppins'] text-[24px] font-semibold text-gray-900 mb-2">
             Personalize your experience
           </h2>
@@ -557,24 +639,28 @@ export function AuthPage() {
             <p className="font-['Poppins'] text-[13px] text-gray-500 mb-4">Pick at least one to personalize your feed</p>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 mb-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
             {interestOptions.map((interest) => {
               const isSelected = selectedInterests.includes(interest.label);
               return (
                 <button
                   key={interest.label}
                   onClick={() => toggleInterest(interest.label)}
-                  className={`flex items-center gap-3 px-4 py-4 rounded-2xl border-2 transition-all ${
+                  className={`relative flex items-center gap-2 px-3 py-3 rounded-2xl border-2 transition-all overflow-hidden lg:flex-col lg:items-center lg:gap-2 lg:px-3 lg:py-4 ${
                     isSelected ? "border-blue-500 bg-blue-50" : "border-gray-100 bg-gray-50 hover:border-gray-200"
                   }`}
                 >
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${isSelected ? "bg-blue-100" : "bg-white"}`}>
-                    <interest.icon size={20} style={{ color: isSelected ? "#155DFC" : interest.color }} />
+                  <div className={`w-8 h-8 lg:w-10 lg:h-10 rounded-lg lg:rounded-xl flex items-center justify-center shrink-0 ${isSelected ? "bg-blue-100" : "bg-white"}`}>
+                    <interest.icon size={18} style={{ color: isSelected ? "#155DFC" : interest.color }} />
                   </div>
-                  <span className={`font-['Poppins'] text-[13px] font-medium text-left ${isSelected ? "text-blue-700" : "text-gray-700"}`}>
+                  <span className={`font-['Poppins'] text-[12px] lg:text-[13px] font-medium text-left lg:text-center leading-tight min-w-0 ${isSelected ? "text-blue-700" : "text-gray-700"}`}>
                     {interest.label}
                   </span>
-                  {isSelected && <Check size={16} className="text-blue-500 ml-auto shrink-0" />}
+                  {isSelected && (
+                    <div className="absolute top-1.5 right-1.5 w-4 h-4 lg:w-5 lg:h-5 rounded-full bg-blue-500 flex items-center justify-center">
+                      <Check size={10} className="text-white" />
+                    </div>
+                  )}
                 </button>
               );
             })}
@@ -605,6 +691,7 @@ export function AuthPage() {
           </button>
         </div>
       </div>
+      </AuthDesktopShell>
     );
   }
 
@@ -612,21 +699,19 @@ export function AuthPage() {
   // RENDER: Auth form (Login / Sign Up)
   // ═══════════════════════════════════════════════
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      {/* Hero gradient section */}
-      <div className="relative h-[220px] overflow-hidden" style={{ backgroundImage: CTA_GRADIENT }}>
+    <AuthDesktopShell stepLabel={mode === "login" ? "Welcome Back" : "Create Account"}>
+    <div className="min-h-screen bg-white flex flex-col lg:min-h-0">
+      {/* Hero gradient section — mobile only */}
+      <div className="relative h-[220px] overflow-hidden lg:hidden" style={{ backgroundImage: CTA_GRADIENT }}>
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white" />
         <div className="absolute top-7 left-0 right-0 flex flex-col items-center">
-          <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-3" style={{ background: GLASS_BG }}>
-            <Compass size={28} className="text-white" />
-          </div>
-          <h1 className="font-['Poppins'] text-[24px] font-semibold text-white">CityUnlock</h1>
-          <p className="font-['Poppins'] text-[13px] text-white/80 mt-0.5">Creator-led trail experiences</p>
+          <CityUnlockLogo layout="stacked" size={44} variant="onGradient" />
+          <p className="font-['Poppins'] text-[13px] text-white/80 mt-1.5">Creator-led trail experiences</p>
         </div>
       </div>
 
       {/* Auth form */}
-      <div className="flex-1 px-6 -mt-6 relative z-10">
+      <div className="flex-1 px-6 -mt-6 relative z-10 lg:mt-0 lg:px-12 lg:py-8 lg:max-w-[560px] lg:mx-auto lg:w-full">
         {/* Mode tabs */}
         <div className="flex gap-1 mb-6 bg-[#ECEDF2] rounded-full p-1.5">
           <button
@@ -783,5 +868,6 @@ export function AuthPage() {
         </p>
       </div>
     </div>
+    </AuthDesktopShell>
   );
 }

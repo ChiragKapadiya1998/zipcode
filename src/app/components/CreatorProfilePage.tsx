@@ -81,12 +81,13 @@ export function CreatorProfilePage() {
     <div className="min-h-screen bg-white">
       {/* ─── Gradient Header — everything sits on the gradient ─── */}
       <div
-        className="relative px-4 pt-4 pb-8"
+        className="relative px-4 lg:px-8 pt-4 pb-8"
         style={{
           backgroundImage:
             "linear-gradient(126.8deg, rgb(146,190,255) 0%, rgb(190,236,255) 24%, rgb(242,189,151) 55%, rgb(255,222,222) 100%)",
         }}
       >
+        <div className="lg:max-w-4xl lg:mx-auto">
         {/* Nav row */}
         <div className="flex items-center justify-between mb-5">
           <button
@@ -157,10 +158,12 @@ export function CreatorProfilePage() {
             label="Total Views"
           />
         </div>
+        </div>
       </div>
 
       {/* ─── White Content Area ─── */}
-      <div className="bg-white rounded-t-[28px] -mt-4 relative z-10 px-4 pt-5 pb-28">
+      <div className="bg-white rounded-t-[28px] -mt-4 relative z-10 px-4 lg:px-8 pt-5 pb-28 lg:pb-12">
+        <div className="lg:max-w-4xl lg:mx-auto">
         {/* ─── Tabs ─── */}
         <div className="flex gap-1 mb-5 bg-[#ECEDF2] rounded-full p-1.5">
           {tabs.map((tab) => {
@@ -183,7 +186,7 @@ export function CreatorProfilePage() {
         </div>
 
         {/* ─── Trail Cards ─── */}
-        <div className="flex flex-col">
+        <div className="flex flex-col lg:grid lg:grid-cols-2 lg:gap-6">
           {displayTrails.length === 0 && (
             <div className="flex flex-col items-center justify-center py-12">
               <span className="text-[32px] mb-2">
@@ -197,7 +200,7 @@ export function CreatorProfilePage() {
           {displayTrails.map((trail, index) => (
             <div key={trail.id}>
               {index > 0 && (
-                <div className="h-[3px] bg-[#f1f1f1] -mx-4" />
+                <div className="h-[3px] bg-[#f1f1f1] -mx-4 lg:hidden" />
               )}
               <div className={`py-2 ${trail.badge ? "pt-7" : ""}`}>
                 <TrailCard
@@ -207,6 +210,7 @@ export function CreatorProfilePage() {
               </div>
             </div>
           ))}
+        </div>
         </div>
       </div>
     </div>
@@ -327,7 +331,7 @@ function TrailCard({
       {/* Host and Join */}
       <div className="flex items-center justify-between px-[0px] py-[12px]">
         <div
-          className="flex items-center gap-2.5 cursor-pointer"
+          className="flex items-center gap-2.5 cursor-pointer min-w-0 flex-1 mr-3"
           onClick={() => {
             const creatorId =
               creators.find((c) => c.handle === trail.hostHandle)?.id || "1";
@@ -341,19 +345,19 @@ function TrailCard({
               className="w-full h-full object-cover"
             />
           </div>
-          <div>
+          <div className="min-w-0">
             <p className="text-[12px] text-gray-400 font-['Poppins'] leading-tight">
               Hosted by
             </p>
-            <p className="text-[15px] font-['Poppins'] font-normal text-gray-800 leading-tight mt-0.5">
+            <p className="text-[15px] font-['Poppins'] font-normal text-gray-800 leading-tight mt-0.5 truncate">
               {trail.hostHandle.replace("@", "")}
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={onClick}
-            className="text-white font-['Poppins'] text-[13px] font-semibold px-5 py-2.5 rounded-full"
+            className="text-white font-['Poppins'] text-[13px] font-semibold px-5 py-2.5 rounded-full whitespace-nowrap"
             style={{
               backgroundImage:
                 "linear-gradient(102deg, rgb(0, 5, 30) 12%, rgb(3, 3, 192) 39%, rgb(56, 125, 236) 84%, rgb(133, 200, 255) 101%)",

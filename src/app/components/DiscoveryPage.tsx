@@ -122,6 +122,13 @@ export function DiscoveryPage() {
     ? primaryFiltered.filter((t) => t.tags?.some((tag) => tag.toLowerCase() === activeFilterTag))
     : primaryFiltered;
 
+  // Sort: pilot trails always float to the top
+  const sortedTrails = [...filteredTrails].sort((a, b) => {
+    if (a.isPilot && !b.isPilot) return -1;
+    if (!a.isPilot && b.isPilot) return 1;
+    return 0;
+  });
+
   // Build explore URL with current filter state as search params
   const exploreTarget = useMemo(() => {
     const params = new URLSearchParams();
@@ -135,14 +142,14 @@ export function DiscoveryPage() {
     <div className="relative overflow-hidden">
       {/* Gradient Header */}
       <div
-        className="relative px-4 pt-4 pb-10"
+        className="relative px-4 lg:px-8 pt-4 pb-10"
         style={{
           backgroundImage:
             "linear-gradient(126.8deg, rgb(146, 190, 255) 0%, rgb(190, 236, 255) 24%, rgb(242, 189, 151) 55%, rgb(255, 222, 222) 100%)",
         }}
       >
         {/* Top Bar */}
-        <div className="flex items-center justify-between mb-5">
+        <div className="flex items-center justify-between mb-5 lg:max-w-5xl lg:mx-auto">
           <button
             className="flex items-center gap-1.5 bg-[rgba(30,30,30,0.4)] border border-[rgba(255,255,255,0.7)] rounded-full px-3 py-1.5"
             onClick={() => setShowCityPicker(true)}
@@ -168,7 +175,7 @@ export function DiscoveryPage() {
         </div>
 
         {/* User Avatars Row */}
-        <div className="flex gap-3 overflow-x-auto pb-3 -mx-1 px-1 scrollbar-hide">
+        <div className="flex gap-3 overflow-x-auto pb-3 -mx-1 px-1 scrollbar-hide lg:max-w-5xl lg:mx-auto">
           {userAvatars.map((user, idx) => (
             <div key={idx} className="flex flex-col items-center gap-1 shrink-0">
               <div
@@ -230,7 +237,7 @@ export function DiscoveryPage() {
         </div>
 
         {/* Category Tabs */}
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide -mx-1 px-1">
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide -mx-1 px-1 lg:max-w-5xl lg:mx-auto lg:flex-wrap">
           {primaryTabs.map((tab) => (
             <button
               key={tab.label}
@@ -248,7 +255,8 @@ export function DiscoveryPage() {
       </div>
 
       {/* Search & Filters + Map Section */}
-      <div className="px-4 -mt-5 bg-white rounded-t-[24px] relative z-10 pt-5">
+      <div className="px-4 lg:px-8 -mt-5 bg-white rounded-t-[24px] relative z-10 pt-5">
+        <div className="lg:max-w-5xl lg:mx-auto">
         {/* Search Bar */}
         <div className="flex items-center gap-2 mb-3">
           <button
@@ -280,10 +288,10 @@ export function DiscoveryPage() {
         {/* Map Preview */}
         <div className="mb-4">
           <MapPreview
-            label={`${filteredTrails.length} Active Trail${filteredTrails.length !== 1 ? "s" : ""}`}
+            label={`${sortedTrails.length} Active Trail${sortedTrails.length !== 1 ? "s" : ""}`}
             respectStopVisibility={false}
             centerOverride={[selectedCity.lat, selectedCity.lng]}
-            trailsData={filteredTrails}
+            trailsData={sortedTrails}
             navigateTarget={exploreTarget}
           />
         </div>
@@ -326,14 +334,14 @@ export function DiscoveryPage() {
         </div>
 
         {/* Trail Cards */}
-        <div className="flex flex-col pb-28">
-          {filteredTrails.length > 0 ? (
-            filteredTrails.map((trail, index) => (
+        <div className="flex flex-col lg:grid lg:grid-cols-2 xl:grid-cols-3 lg:gap-6 pb-28">
+          {sortedTrails.length > 0 ? (
+            sortedTrails.map((trail, index) => (
               <div key={trail.id}>
                 {index > 0 && (
-                  <div className="h-[3px] bg-[#f1f1f1] -mx-4" />
+                  <div className="h-[3px] bg-[#f1f1f1] -mx-4 lg:hidden" />
                 )}
-                <div className={`py-2 ${trail.badge ? "pt-7" : ""}`}>
+                <div className="py-2 lg:py-0 lg:pt-7">
                   <TrailCard
                     trail={trail}
                     onClick={() => navigate(`/trail/${trail.id}`)}
@@ -344,7 +352,7 @@ export function DiscoveryPage() {
               </div>
             ))
           ) : (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
+            <div className="flex flex-col items-center justify-center py-12 text-center lg:col-span-2 xl:col-span-3">
               <p className="text-[15px] font-['Poppins'] font-semibold text-gray-800 mb-1">
                 No trails found
               </p>
@@ -354,13 +362,14 @@ export function DiscoveryPage() {
             </div>
           )}
         </div>
+        </div>
       </div>
 
       {/* City Picker Modal */}
       {showCityPicker && (
-        <div className="fixed inset-0 z-[100] flex items-end justify-center">
+        <div className="fixed inset-0 z-[100] flex items-end lg:items-center justify-center">
           <div className="absolute inset-0 bg-black/40" onClick={() => setShowCityPicker(false)} />
-          <div className="relative w-full max-w-[430px] bg-white rounded-t-[24px] pb-8 max-h-[70vh] flex flex-col">
+          <div className="relative w-full max-w-[430px] lg:max-w-[480px] bg-white rounded-t-[24px] lg:rounded-[24px] pb-8 max-h-[70vh] flex flex-col">
             {/* Handle bar */}
             <div className="flex justify-center pt-3 pb-2">
               <div className="w-10 h-1 bg-gray-300 rounded-full" />
@@ -546,7 +555,7 @@ function TrailCard({
       {/* Host and Join */}
       <div className="flex items-center justify-between px-[0px] py-[12px]">
         <div
-          className="flex items-center gap-2.5 cursor-pointer"
+          className="flex items-center gap-2.5 cursor-pointer min-w-0 flex-1 mr-3"
           onClick={() => {
             const creatorId = creators.find((c) => c.handle === trail.hostHandle)?.id || "1";
             navigate(`/creator/${creatorId}`);
@@ -560,19 +569,19 @@ function TrailCard({
               className="w-full h-full object-cover"
             />
           </div>
-          <div>
+          <div className="min-w-0">
             <p className="text-[12px] text-gray-400 font-['Poppins'] leading-tight">
               Hosted by
             </p>
-            <p className="text-[15px] font-['Poppins'] font-normal text-gray-800 leading-tight mt-0.5">
+            <p className="text-[15px] font-['Poppins'] font-normal text-gray-800 leading-tight mt-0.5 truncate">
               {trail.hostHandle.replace("@", "")}
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={onClick}
-            className="text-white font-['Poppins'] text-[13px] font-semibold px-5 py-2.5 rounded-full"
+            className="text-white font-['Poppins'] text-[13px] font-semibold px-5 py-2.5 rounded-full whitespace-nowrap"
             style={{
               backgroundImage:
                 "linear-gradient(102deg, rgb(0, 5, 30) 12%, rgb(3, 3, 192) 39%, rgb(56, 125, 236) 84%, rgb(133, 200, 255) 101%)",

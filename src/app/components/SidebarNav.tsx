@@ -5,17 +5,18 @@ import {
   PlusCircle,
   Bell,
   User,
-  MapPin,
-  Compass,
+  Map,
   TrendingUp,
   Settings,
 } from "lucide-react";
 import { useUser } from "../data/userStore";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { CityUnlockLogo } from "./CityUnlockLogo";
 
 const mainNav = [
   { label: "Home", icon: Home, path: "/" },
   { label: "Search", icon: Search, path: "/search" },
+  { label: "Explore Map", icon: Map, path: "/explore" },
   { label: "Create Trail", icon: PlusCircle, path: "/create-trail" },
   { label: "Activity", icon: Bell, path: "/activity" },
   { label: "Profile", icon: User, path: "/profile" },
@@ -23,7 +24,7 @@ const mainNav = [
 
 const secondaryNav = [
   { label: "Trending", icon: TrendingUp, path: "/" },
-  { label: "Near Me", icon: MapPin, path: "/" },
+  { label: "Creators", icon: User, path: "/creators" },
   { label: "Settings", icon: Settings, path: "/profile" },
 ];
 
@@ -40,19 +41,17 @@ export function SidebarNav() {
   return (
     <aside className="w-[260px] h-screen sticky top-0 bg-white border-r border-gray-100 flex flex-col py-6 px-4 shrink-0">
       {/* Logo */}
-      <div className="flex items-center gap-2.5 px-3 mb-8">
+      <div className="px-3 mb-8">
         <div
-          className="w-9 h-9 rounded-xl flex items-center justify-center"
+          className="flex items-center gap-2.5 px-3 py-2 rounded-xl cursor-pointer"
+          onClick={() => navigate("/")}
           style={{
-            backgroundImage:
-              "linear-gradient(102deg, rgb(0, 5, 30) 12%, rgb(3, 3, 192) 39%, rgb(56, 125, 236) 84%, rgb(133, 200, 255) 101%)",
+            background:
+              "linear-gradient(145deg, rgb(0, 5, 30) 0%, rgb(3, 3, 192) 45%, rgb(56, 125, 236) 85%, rgb(133, 200, 255) 100%)",
           }}
         >
-          <Compass size={20} className="text-white" />
+          <CityUnlockLogo layout="horizontal" size={26} variant="onGradient" />
         </div>
-        <span className="font-['Poppins'] text-[18px] font-semibold text-gray-900">
-          Trailblaze
-        </span>
       </div>
 
       {/* Main Navigation */}

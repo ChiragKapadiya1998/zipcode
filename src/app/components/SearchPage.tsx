@@ -78,9 +78,10 @@ export function SearchPage() {
   const hasQuery = query.trim().length > 0;
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-28">
+    <div className="min-h-screen bg-gray-50 pb-28 lg:pb-12">
       {/* Header */}
-      <div className="bg-white px-4 pt-4 pb-4 border-b border-gray-100">
+      <div className="bg-white px-4 lg:px-8 pt-4 pb-4 border-b border-gray-100">
+        <div className="lg:max-w-4xl lg:mx-auto">
         <div className="flex items-center gap-3 mb-4">
           <button
             onClick={() => navigate(-1)}
@@ -146,9 +147,11 @@ export function SearchPage() {
             </button>
           ))}
         </div>
+        </div>
       </div>
 
-      <div className="px-4 pt-4">
+      <div className="px-4 lg:px-8 pt-4">
+        <div className="lg:max-w-4xl lg:mx-auto">
         {/* No query: Show trending & popular */}
         {!hasQuery && (
           <>
@@ -243,7 +246,7 @@ export function SearchPage() {
                   Explore All Trails
                 </h3>
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
                 {cityTrails.map((trail) => (
                   <div
                     key={trail.id}
@@ -384,6 +387,7 @@ export function SearchPage() {
             </div>
           </>
         )}
+        </div>
       </div>
     </div>
   );
