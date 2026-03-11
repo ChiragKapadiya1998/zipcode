@@ -10,8 +10,21 @@ import confetti from "canvas-confetti";
 
 /* ────────────────── Confetti Burst ────────────────── */
 
-function fireConfettiBurst(canvas: HTMLCanvasElement) {
-  const myConfetti = confetti.create(canvas, { resize: true, useWorker: true });
+function fireConfettiBurst(canvas: HTMLCanvasElement | null) {
+  if (!canvas || typeof canvas.getBoundingClientRect !== "function") {
+    return () => {};
+  }
+  // Verify the canvas is actually in the DOM and has dimensions
+  try {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width === 0 && rect.height === 0) {
+      return () => {};
+    }
+  } catch (_) {
+    return () => {};
+  }
+
+  const myConfetti = confetti.create(canvas, { resize: true, useWorker: false });
   const duration = 4000;
   const end = Date.now() + duration;
 
@@ -139,8 +152,12 @@ export function TrailCompletionPage() {
   const confettiCanvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    // Fire confetti immediately
-    const cleanup = fireConfettiBurst(confettiCanvasRef.current!);
+    // Delay confetti slightly to ensure canvas is mounted and has dimensions
+    // in the Figma preview iframe
+    let cleanupFn: (() => void) | undefined;
+    const raf = requestAnimationFrame(() => {
+      cleanupFn = fireConfettiBurst(confettiCanvasRef.current);
+    });
 
     setTimeout(() => setShowContent(true), 200);
 
@@ -148,7 +165,10 @@ export function TrailCompletionPage() {
       completeTrail(id);
     }
 
-    return cleanup;
+    return () => {
+      cancelAnimationFrame(raf);
+      cleanupFn?.();
+    };
   }, []);
 
   const hostDisplayName = trail.hostHandle.replace(/^@/, "");

@@ -19,6 +19,9 @@ import {
   Users,
   Zap,
   Instagram,
+  Pencil,
+  Trash2,
+  Plus,
 } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { useUser } from "../data/userStore";
@@ -26,7 +29,7 @@ import { trails } from "../data/trailData";
 import { MapPreview } from "./MapPreview";
 import { formatCount } from "../data/instagramService";
 
-const profileTabs = ["Joined", "Completed", "Favorites", "Badges"];
+const profileTabs = ["Joined", "Completed", "Created", "Favorites", "Badges"];
 
 const badges = [
   { name: "First Trail", icon: MapPin, color: "#155DFC", earned: true },
@@ -120,6 +123,53 @@ export function ProfilePage() {
             onAction={() => navigate("/")}
           />
         );
+      case "Created":
+        return (
+          <div className="flex flex-col gap-3">
+            {/* Create new trail CTA */}
+            <button
+              onClick={() => navigate("/create-trail")}
+              className="flex items-center gap-3 bg-[#ECEDF2] rounded-2xl px-4 py-3.5 transition-colors active:bg-gray-200 cursor-pointer"
+            >
+              <div
+                className="w-[36px] h-[36px] rounded-full flex items-center justify-center shrink-0"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(102deg, rgb(0, 5, 30) 12%, rgb(3, 3, 192) 39%, rgb(56, 125, 236) 84%, rgb(133, 200, 255) 101%)",
+                }}
+              >
+                <Plus size={15} className="text-white" />
+              </div>
+              <div className="flex-1 min-w-0 text-left">
+                <p className="font-['Poppins'] text-[13px] font-medium text-gray-700">
+                  Create a New Trail
+                </p>
+                <p className="font-['Poppins'] text-[12px] text-gray-400 truncate">
+                  Design and share your own experience
+                </p>
+              </div>
+              <ChevronRight size={16} className="text-gray-300 shrink-0" />
+            </button>
+
+            {/* Created trails list */}
+            {user.createdTrails.length > 0 ? (
+              user.createdTrails.map((trail) => (
+                <CreatedTrailCard
+                  key={trail.id}
+                  trail={trail}
+                  onEdit={() => navigate(`/edit-trail/${trail.id}`)}
+                  onView={() => navigate(`/trail/${trail.id}`)}
+                />
+              ))
+            ) : (
+              <div className="text-center py-6">
+                <p className="font-['Poppins'] text-[13px] text-gray-400">
+                  No trails created yet. Tap above to start!
+                </p>
+              </div>
+            )}
+          </div>
+        );
       case "Favorites":
         return savedTrails.length > 0 ? (
           <div className="flex flex-col gap-3">
@@ -187,17 +237,17 @@ export function ProfilePage() {
   const earnedCount = badges.filter((b) => b.earned).length;
 
   return (
-    <div className="min-h-screen bg-white pb-28">
+    <div className="min-h-screen bg-white pb-28 lg:pb-12">
       {/* Gradient Header — centered layout */}
       <div
-        className="relative px-4 pt-4 pb-16"
+        className="relative px-4 lg:px-8 pt-4 pb-16"
         style={{
           backgroundImage:
             "linear-gradient(126.8deg, rgb(146, 190, 255) 0%, rgb(190, 236, 255) 24%, rgb(242, 189, 151) 55%, rgb(255, 222, 222) 100%)",
         }}
       >
         {/* Top Nav */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-6 lg:max-w-4xl lg:mx-auto">
           <button
             onClick={() => navigate("/")}
             className="bg-[rgba(30,30,30,0.4)] border border-[rgba(255,255,255,0.7)] backdrop-blur-md rounded-full p-2"
@@ -290,7 +340,8 @@ export function ProfilePage() {
       </div>
 
       {/* Content area — overlaps gradient with rounded top */}
-      <div className="px-4 -mt-8 relative z-10 bg-white rounded-t-[24px] pt-5">
+      <div className="px-4 lg:px-8 -mt-8 relative z-10 bg-white rounded-t-[24px] pt-5">
+        <div className="lg:max-w-4xl lg:mx-auto">
         {/* Stats Row — 4 columns, clean number-first */}
         <div className="flex items-center justify-between mb-5 px-2">
           <StatItem value={user.points} label="Points" icon={<Zap size={13} />} />
@@ -352,9 +403,11 @@ export function ProfilePage() {
                 ? joinedTrails.length
                 : tab === "Completed"
                   ? completedTrails.length
-                  : tab === "Favorites"
-                    ? savedTrails.length
-                    : earnedCount;
+                  : tab === "Created"
+                    ? user.createdTrails.length
+                    : tab === "Favorites"
+                      ? savedTrails.length
+                      : earnedCount;
             return (
               <button
                 key={tab}
@@ -437,6 +490,7 @@ export function ProfilePage() {
               Log Out
             </span>
           </button>
+        </div>
         </div>
       </div>
     </div>
@@ -541,6 +595,82 @@ function ProfileTrailCard({
           </span>
           <span className="text-[11px] font-['Poppins'] text-white/50 ml-auto">
             {trail.hostHandle}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Created Trail Card ── */
+function CreatedTrailCard({
+  trail,
+  onEdit,
+  onView,
+}: {
+  trail: (typeof trails)[0];
+  onEdit: () => void;
+  onView: () => void;
+}) {
+  return (
+    <div
+      className="relative h-[140px] rounded-2xl overflow-hidden cursor-pointer active:scale-[0.98] transition-transform"
+      onClick={onView}
+    >
+      <ImageWithFallback
+        src={trail.image}
+        alt={trail.title}
+        className="w-full h-full object-cover"
+      />
+      {/* Overlay gradient */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+
+      {/* Top row — status chip + edit */}
+      <div className="absolute top-3 left-3 right-3 flex items-center justify-between">
+        <div className="flex items-center gap-1.5">
+          <div
+            className="rounded-full px-2.5 h-[24px] flex items-center gap-1"
+            style={{ backgroundColor: "#8B5CF6" }}
+          >
+            <Pencil size={10} className="text-white" />
+            <span className="text-[11px] font-['Poppins'] font-semibold text-white">
+              Created
+            </span>
+          </div>
+          {trail.joined > 0 && (
+            <div className="bg-black/50 backdrop-blur-sm rounded-full px-2 h-[24px] flex items-center gap-1">
+              <Users size={10} className="text-white/80" />
+              <span className="text-[11px] font-['Poppins'] font-medium text-white">
+                {trail.joined}
+              </span>
+            </div>
+          )}
+        </div>
+        {/* Edit button */}
+        <button
+          onClick={(e) => { e.stopPropagation(); onEdit(); }}
+          className="bg-white/90 backdrop-blur-sm rounded-full w-[30px] h-[30px] flex items-center justify-center transition-all active:scale-90"
+        >
+          <Pencil size={13} className="text-gray-700" />
+        </button>
+      </div>
+
+      {/* Bottom row — title + meta */}
+      <div className="absolute bottom-3 left-3 right-3">
+        <h3 className="text-white font-['Poppins'] text-[17px] leading-tight mb-1">
+          {trail.title}
+        </h3>
+        <div className="flex items-center gap-3">
+          <span className="flex items-center gap-1 text-[11px] font-['Poppins'] text-white/70">
+            <MapPin size={10} />
+            {trail.totalStops} stops
+          </span>
+          <span className="flex items-center gap-1 text-[11px] font-['Poppins'] text-white/70">
+            <Clock size={10} />
+            {trail.totalDuration}
+          </span>
+          <span className="text-[11px] font-['Poppins'] text-white/50 ml-auto">
+            {trail.date}
           </span>
         </div>
       </div>

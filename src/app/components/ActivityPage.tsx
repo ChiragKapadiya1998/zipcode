@@ -36,6 +36,8 @@ export function ActivityPage() {
         return <Heart size={14} className="text-gray-400" />;
       case "comment":
         return <MessageCircle size={14} className="text-gray-400" />;
+      case "cancellation":
+        return <Bell size={14} className="text-red-400" />;
       default:
         return <Bell size={14} className="text-gray-400" />;
     }
@@ -48,6 +50,7 @@ export function ActivityPage() {
       created: { icon: MapPin, bg: "bg-violet-50", fg: "text-violet-400" },
       checkin: { icon: Check, bg: "bg-amber-50", fg: "text-amber-400" },
       badge: { icon: Award, bg: "bg-rose-50", fg: "text-rose-400" },
+      cancelled: { icon: MapPin, bg: "bg-red-50", fg: "text-red-400" },
     };
     const c = config[type] || { icon: Bell, bg: "bg-gray-100", fg: "text-gray-400" };
     const Icon = c.icon;
@@ -70,6 +73,8 @@ export function ActivityPage() {
         return "Checked in at";
       case "badge":
         return "Earned";
+      case "cancelled":
+        return "Cancelled";
       default:
         return "";
     }
@@ -235,6 +240,11 @@ export function ActivityPage() {
                   >
                     {notification.message}
                   </p>
+                  {notification.cancellationReason && (
+                    <p className="font-['Poppins'] text-[11px] text-gray-400 mt-1 italic leading-snug">
+                      &ldquo;{notification.cancellationReason}&rdquo;
+                    </p>
+                  )}
                   <p className="font-['Poppins'] text-[10px] text-gray-400 mt-1">
                     {notification.time}
                   </p>

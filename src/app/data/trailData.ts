@@ -10,6 +10,8 @@ export interface TrailStop {
   lat: number;
   lng: number;
   teaser: string;
+  /** Post-check-in insider content — only visible after the user checks in at this stop */
+  reveal?: string;
 }
 
 export interface Trail {
@@ -118,6 +120,13 @@ const IMG_P_SL_COVER = "https://images.unsplash.com/photo-1615434810397-68f24166
 const IMG_P_ELYSIAN_COVER = "https://images.unsplash.com/photo-1689096695702-87f92d43aa7f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxFbHlzaWFuJTIwUGFyayUyMGhpbGxzaWRlJTIwc3RhaXJzJTIwTG9zJTIwQW5nZWxlc3xlbnwxfHx8fDE3NzI1MTc0MDl8MA&ixlib=rb-4.1.0&q=80&w=1080";
 const IMG_P_YORK_COVER = "https://images.unsplash.com/photo-1637064071440-6e17b117d59e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxib3VsZXZhcmQlMjBzaG9wcyUyMGxvY2FsJTIwc3RvcmVzJTIwd2Fsa2FibGV8ZW58MXx8fHwxNzcyNTE3NDI1fDA&ixlib=rb-4.1.0&q=80&w=1080";
 
+// ─── Leon's Eastside Micro-Trail image constants ───
+const IMG_P_LEON_COVER = "https://images.unsplash.com/photo-1760264412079-4ba58d188c92?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx2aWJyYW50JTIwdXJiYW4lMjBuZWlnaGJvcmhvb2QlMjBzdHJlZXQlMjBDYWxpZm9ybmlhfGVufDF8fHx8MTc3MjgxMTE4NXww&ixlib=rb-4.1.0&q=80&w=1080";
+const IMG_P_GUISADOS = "https://images.unsplash.com/photo-1719402399083-d42128832ff9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxNZXhpY2FuJTIwdGFjbyUyMGNvdW50ZXIlMjBhdXRoZW50aWMlMjByZXN0YXVyYW50fGVufDF8fHx8MTc3MjgxMTE3Mnww&ixlib=rb-4.1.0&q=80&w=1080";
+const IMG_P_SELF_HELP = "https://images.unsplash.com/photo-1696862048447-3ab8435ce5f1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxDaGljYW5vJTIwcHJpbnRtYWtpbmclMjBhcnQlMjBnYWxsZXJ5JTIwbXVyYWxzfGVufDF8fHx8MTc3MjgxMTE3Mnww&ixlib=rb-4.1.0&q=80&w=1080";
+const IMG_P_LA_RIVER = "https://images.unsplash.com/photo-1689062246803-5b37fc5f888d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx1cmJhbiUyMHJpdmVyJTIwcGF0aCUyMHdhbGtpbmclMjBjb25jcmV0ZSUyMGNoYW5uZWwlMjBiaXJkc3xlbnwxfHx8fDE3NzI4MTExNzZ8MA&ixlib=rb-4.1.0&q=80&w=1080";
+const IMG_P_COGNOSCENTI = "https://images.unsplash.com/photo-1749626588174-09f86a67a5aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzcGVjaWFsdHklMjBjb2ZmZWUlMjBzaG9wJTIwbWluaW1hbCUyMGludGVyaW9yJTIwcG91ciUyMG92ZXJ8ZW58MXx8fHwxNzcyODExMTczfDA&ixlib=rb-4.1.0&q=80&w=1080";
+
 // ─── Creator avatar constants ───
 const AVA_SAM = "https://images.unsplash.com/photo-1674531512182-c7a0e47ae57a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx5b3VuZyUyMGNvbmZpZGVudCUyMG1hbiUyMHBvcnRyYWl0JTIwaGVhZHNob3QlMjB3YXJtJTIwbGlnaHRpbmd8ZW58MXx8fHwxNzcxNTI1MDUxfDA&ixlib=rb-4.1.0&q=80&w=1080";
 const AVA_LORINA = "https://images.unsplash.com/photo-1589800887183-e22983ea361c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx5b3VuZyUyMHdvbWFuJTIwY3JlYXRpdmUlMjBwb3J0cmFpdHxlbnwxfHx8fDE3NzEzOTE2NTF8MA&ixlib=rb-4.1.0&q=80&w=1080";
@@ -129,6 +138,7 @@ const AVA_DARIUS = "https://images.unsplash.com/photo-1763618251924-473fc241972d
 const AVA_NOOR = "https://images.unsplash.com/photo-1625987306773-8b9e554b25e2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx5b3VuZyUyMHdvbWFuJTIwaGlqYWIlMjBwb3J0cmFpdCUyMG1vZGVybiUyMHN0eWxpc2h8ZW58MXx8fHwxNzcxNTI1MDUzfDA&ixlib=rb-4.1.0&q=80&w=1080";
 const AVA_MARCO = "https://images.unsplash.com/photo-1760050516416-e6df83c9fcad?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx5b3VuZyUyMG1hbiUyMHRhdHRvbyUyMHBvcnRyYWl0JTIwdXJiYW4lMjBjb29sfGVufDF8fHx8MTc3MTUyNTA1NHww&ixlib=rb-4.1.0&q=80&w=1080";
 const AVA_PRIYA = "https://images.unsplash.com/photo-1611246706753-80b59941efc6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx5b3VuZyUyMHdvbWFuJTIwZmFzaGlvbiUyMGludmx1ZW5jZXIlMjBwb3J0cmFpdHxlbnwxfHx8fDE3NzE0Mjg1MTF8MA&ixlib=rb-4.1.0&q=80&w=1080";
+const AVA_LEON = "https://images.unsplash.com/photo-1752486268262-6ce6b339a8de?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtYW4lMjBnbGFzc2VzJTIwY3JlYXRpdmUlMjBwcm9mZXNzaW9uYWwlMjBoZWFkc2hvdCUyMHdhcm18ZW58MXx8fHwxNzcyODExMjA4fDA&ixlib=rb-4.1.0&q=80&w=1080";
 
 export const creators: Creator[] = [
   { id: "1", name: "Sam", handle: "@TheEnthusiastSam", avatar: AVA_SAM, bio: "Trail creator \u2022 Adventure guide \u2022 LA explorer", instagramFollowers: "12.4k", following: 847, trailsCreated: 24, totalViews: "156k" },
@@ -141,6 +151,7 @@ export const creators: Creator[] = [
   { id: "8", name: "Noor", handle: "@NoorExplores", avatar: AVA_NOOR, bio: "Shopping trails \u2022 Thrift queen \u2022 Vintage finds", instagramFollowers: "14.1k", following: 891, trailsCreated: 20, totalViews: "195k" },
   { id: "9", name: "Marco", handle: "@MarcoSports", avatar: AVA_MARCO, bio: "Sport trails \u2022 Beach fitness \u2022 Canyon runs", instagramFollowers: "20.5k", following: 445, trailsCreated: 22, totalViews: "267k" },
   { id: "10", name: "Priya", handle: "@PriyaSnaps", avatar: AVA_PRIYA, bio: "Photo trails \u2022 Instagrammable spots \u2022 Golden hour", instagramFollowers: "31.2k", following: 1567, trailsCreated: 28, totalViews: "412k" },
+  { id: "11", name: "Monte", handle: "@MonteDeLeon", avatar: AVA_LEON, bio: "Writer \u2022 Storyteller \u2022 LA through the unmarked door", instagramFollowers: "67.8k", following: 922, trailsCreated: 1, totalViews: "24k" },
 ];
 
 // ═══════════════════════════════════════════════
@@ -176,6 +187,12 @@ const _pilotTrails: Trail[] = [
     { id: 2, name: "Permanent Records", address: "5116 York Blvd, Highland Park, CA 90042", image: IMG_P_PERM_REC, unlocked: false, checkedIn: false, lat: 34.1102, lng: -118.2100, teaser: "Survived gentrification by getting more specific. Browse the 'LA local only' bin — records you can't stream." },
     { id: 3, name: "York Blvd Mural Corridor", address: "York Blvd, Ave 55-57, Highland Park, CA 90042", image: IMG_P_YORK_MURAL, unlocked: false, checkedIn: false, lat: 34.1095, lng: -118.2050, teaser: "The largest panel at Ave 57 has no signature. The artist is in a tile at the base — you have to crouch. Title: 'Before the Boulevard.'" },
     { id: 4, name: "The Hi", address: "5043 York Blvd, Highland Park, CA 90042", image: IMG_P_THE_HI, unlocked: false, checkedIn: false, lat: 34.1100, lng: -118.2105, teaser: "You've covered York Blvd end to end. That's one layer. Trail 2 begins where this one ends. This is floor one." },
+  ]},
+  { id: "pilot-6", title: "The LA Nobody Puts on a Poster", image: IMG_P_LEON_COVER, date: "20 Mar 2026", duration: "~2 hrs", price: "$$", hostName: "Monte", hostHandle: "@MonteDeLeon", hostAvatar: AVA_LEON, hostFollowers: "67.8k", hostBio: "Writer, storyteller, legal-career-turned-creator. Claremont McKenna '02. Grew up finding LA the wrong way — which turned out to be the right way.", description: "A condensed version of Monte Albers de Leon's full-day Eastside concept. Two adjacent neighborhoods, four stops, zero Ubers. From a braised-taco counter that grew out of its neighborhood to a fifty-year Chicano printmaking studio to the stretch of the LA River that makes you forget you're in Los Angeles. Ends at a serious coffee shop in a neighborhood most Angelenos can't locate on a map.", totalStops: 4, totalDuration: "100-120 min", distance: "3.2 km", joined: 8, rating: 4.9, views: 512, badge: "Pilot \u00b7 Creator Collab", status: "live", lat: 34.0336, lng: -118.2110, color: "#0EA5E9", tags: ["food", "art", "coffee", "nature"], meta: ["new", "trending", "editors_pick"], neighborhood: "Boyle Heights / Frogtown", vibe: "The antidote to performative LA | Creator-led narrative", bestTimeOfDay: "Morning", groupFriendly: true, isPilot: true, source: "local", stops: [
+    { id: 1, name: "Guisados", address: "2100 E Cesar E Chavez Ave, Los Angeles, CA 90033", image: IMG_P_GUISADOS, unlocked: true, checkedIn: false, lat: 34.0485, lng: -118.2108, teaser: "Every great day in Los Angeles should begin somewhere that reminds you the city existed long before the industry arrived. Guisados sits in Boyle Heights like it belongs there \u2014 because it does. Order the braised short rib. The line moves fast." },
+    { id: 2, name: "Self Help Graphics & Art", address: "1300 E 1st St, Los Angeles, CA 90033", image: IMG_P_SELF_HELP, unlocked: false, checkedIn: false, lat: 34.0398, lng: -118.2268, teaser: "A nonprofit printmaking studio founded in 1970 \u2014 fifty years of Chicano art as practice, not branding. The work on the walls is political, personal, and technically accomplished, often simultaneously. You will not see anything like it at a gallery in Silver Lake." },
+    { id: 3, name: "LA River Bike Path (Frogtown)", address: "Elysian Valley Bike Path, Los Angeles, CA 90039", image: IMG_P_LA_RIVER, unlocked: false, checkedIn: false, lat: 34.0830, lng: -118.2465, teaser: "Most visitors don't know the LA River exists in any form worth visiting. This stretch is the exception \u2014 you are standing next to water, in Los Angeles, surrounded by street art and herons. It lands differently in person than any photograph can prepare you for." },
+    { id: 4, name: "Cognoscenti Coffee", address: "3968 W Eagle Rock Blvd, Los Angeles, CA 90065", image: IMG_P_COGNOSCENTI, unlocked: false, checkedIn: false, lat: 34.1260, lng: -118.2290, teaser: "A serious, unpretentious specialty coffee operation tucked into residential Glassell Park. This is a genuine rest stop \u2014 a place to sit, regroup, and have the kind of conversation the morning's experiences were worth having." },
   ]},
 ];
 

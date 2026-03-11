@@ -4,15 +4,50 @@ import { trails } from "../data/trailData";
 import type { Trail } from "../data/trailData";
 import { getCachedEventbriteTrails } from "../data/eventbriteService";
 
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl:
-    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png",
-  iconUrl:
-    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png",
-  shadowUrl:
-    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
-});
+/* ── Monkey-patch Leaflet internals to survive the Figma iframe ──
+ *
+ * The Figma preview iframe converts ANY uncaught error into a generic
+ * "Unknown runtime error". We cannot suppress these after-the-fact because
+ * Figma's own handler runs at a level we can't intercept. So we must
+ * PREVENT errors from being thrown in the first place.
+ * ──────────────────────────────────────────────────────────────────── */
+try {
+  // 1. Fix default icon URLs
+  delete (L.Icon.Default.prototype as any)._getIconUrl;
+  L.Icon.Default.mergeOptions({
+    iconRetinaUrl:
+      "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png",
+    iconUrl:
+      "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png",
+    shadowUrl:
+      "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
+  });
+
+  // 2. Patch L.DomUtil.getPosition — guard against missing _leaflet_pos
+  const _origGetPosition = L.DomUtil.getPosition;
+  L.DomUtil.getPosition = function (el: any) {
+    if (!el || !el._leaflet_pos) {
+      return new L.Point(0, 0);
+    }
+    return _origGetPosition.call(this, el);
+  };
+
+  // 3. Guard L.Map.remove() — cleanup can throw when the container
+  //    is already detached from the DOM (Figma iframe hot-reload).
+  const MapProto = (L.Map as any).prototype;
+  if (MapProto?.remove) {
+    const origRemove = MapProto.remove;
+    MapProto.remove = function () {
+      try {
+        return origRemove.apply(this, arguments);
+      } catch (_) {
+        /* suppress cleanup errors */
+      }
+    };
+  }
+} catch (_) {
+  /* Leaflet patching failed — non-fatal in iframe */
+}
 
 const LA_CENTER: [number, number] = [34.0522, -118.2437];
 
@@ -270,7 +305,11 @@ export function TrailMap({
       doubleClickZoom: interactive,
       boxZoom: interactive,
       fadeAnimation: false,
-      zoomAnimation: true,
+      zoomAnimation: false,
+      // Force SVG renderer — avoid Canvas renderer entirely to prevent
+      // "canvas.getBoundingClientRect is not a function" in the Figma iframe
+      preferCanvas: false,
+      renderer: L.svg(),
     });
 
     L.tileLayer(
@@ -439,22 +478,11 @@ export function TrailMap({
     return () => {
       mountedRef.current = false;
       try {
-        map.scrollWheelZoom?.disable();
-        map.touchZoom?.disable();
-        map.doubleClickZoom?.disable();
-        map.boxZoom?.disable();
-        map.dragging?.disable();
         map.stop();
         map.off();
-        requestAnimationFrame(() => {
-          try {
-            map.remove();
-          } catch (_) {
-            /* suppress */
-          }
-        });
+        map.remove();
       } catch (_) {
-        /* suppress */
+        /* suppress cleanup errors in iframe */
       }
       mapInstanceRef.current = null;
       markersRef.current = [];

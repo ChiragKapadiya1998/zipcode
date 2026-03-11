@@ -341,7 +341,7 @@ export function DiscoveryPage() {
                 {index > 0 && (
                   <div className="h-[3px] bg-[#f1f1f1] -mx-4 lg:hidden" />
                 )}
-                <div className="py-2 lg:py-0 lg:pt-7">
+                <div className="pt-6 pb-2 lg:pb-0 lg:pt-7">
                   <TrailCard
                     trail={trail}
                     onClick={() => navigate(`/trail/${trail.id}`)}

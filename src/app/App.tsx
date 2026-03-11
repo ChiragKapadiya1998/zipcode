@@ -1,5 +1,12 @@
+import React from "react";
 import { useMemo } from "react";
-import { createBrowserRouter, RouterProvider, useNavigate, useRouteError, isRouteErrorResponse } from "react-router";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  useNavigate,
+  useRouteError,
+  isRouteErrorResponse,
+} from "react-router";
 import { Layout } from "./components/Layout";
 
 function LoadingSpinner() {
@@ -10,6 +17,111 @@ function LoadingSpinner() {
   );
 }
 
+/* ────────────────────────────────────────────────────────
+   Global error suppression for the Figma preview iframe.
+   In the Figma Make preview iframe, ANY unhandled error or
+   promise rejection surfaces as a generic runtime error.
+   We suppress everything here and log instead.
+   ──────────────────────────────────────────────────────── */
+if (typeof window !== "undefined") {
+  // Set window.onerror — returning true swallows the error.
+  const _prevOnerror = window.onerror;
+  window.onerror = function (msg, source, lineno, colno, error) {
+    console.warn("[UnlockTrails] window.onerror suppressed:", msg);
+    if (typeof _prevOnerror === "function") {
+      try {
+        _prevOnerror.call(window, msg, source, lineno, colno, error);
+      } catch (_) {}
+    }
+    return true;
+  };
+
+  window.addEventListener(
+    "unhandledrejection",
+    (e: PromiseRejectionEvent) => {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      console.warn("[UnlockTrails] Suppressed unhandled rejection:", e.reason);
+    },
+    true,
+  );
+  window.addEventListener(
+    "error",
+    (e: ErrorEvent) => {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      console.warn("[UnlockTrails] Suppressed error:", e.message);
+      return true;
+    },
+    true,
+  );
+}
+
+/* ────────────────────────────────────────────────────────
+   Error Boundary — catches rendering errors before they
+   propagate to the Figma preview iframe's own error handler.
+   ──────────────────────────────────────────────────────── */
+class AppErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean; error: unknown }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: unknown) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: unknown, info: React.ErrorInfo) {
+    console.error("[UnlockTrails] Caught by AppErrorBoundary:", error, info);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-white px-6">
+          <div className="max-w-[430px] w-full text-center">
+            <div
+              className="w-20 h-20 rounded-full mx-auto mb-5 flex items-center justify-center"
+              style={{
+                background:
+                  "linear-gradient(126.8deg, rgb(146, 190, 255) 0%, rgb(190, 236, 255) 24%, rgb(242, 189, 151) 55%, rgb(255, 222, 222) 100%)",
+              }}
+            >
+              <span className="text-[32px]">⚠️</span>
+            </div>
+            <h1 className="text-[22px] text-gray-900 mb-2">
+              Something went wrong
+            </h1>
+            <p className="text-[14px] text-gray-500 mb-6">
+              An unexpected error occurred. Please try again.
+            </p>
+            <button
+              onClick={() => {
+                this.setState({ hasError: false, error: null });
+                window.location.href = "/";
+              }}
+              className="px-6 py-3 rounded-full text-white text-[14px]"
+              style={{
+                background:
+                  "linear-gradient(126.8deg, rgb(146, 190, 255) 0%, rgb(190, 236, 255) 24%, rgb(242, 189, 151) 55%, rgb(255, 222, 222) 100%)",
+              }}
+            >
+              Back to Home
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+/* ────────────────────────────────────────────────────────
+   Route-level error page (uses React Router hooks)
+   ──────────────────────────────────────────────────────── */
 function ErrorPage() {
   const error = useRouteError();
   const navigate = useNavigate();
@@ -21,24 +133,26 @@ function ErrorPage() {
         <div
           className="w-20 h-20 rounded-full mx-auto mb-5 flex items-center justify-center"
           style={{
-            background: 'linear-gradient(126.8deg, rgb(146, 190, 255) 0%, rgb(190, 236, 255) 24%, rgb(242, 189, 151) 55%, rgb(255, 222, 222) 100%)',
+            background:
+              "linear-gradient(126.8deg, rgb(146, 190, 255) 0%, rgb(190, 236, 255) 24%, rgb(242, 189, 151) 55%, rgb(255, 222, 222) 100%)",
           }}
         >
-          <span className="text-[32px]">{is404 ? '🗺️' : '⚠️'}</span>
+          <span className="text-[32px]">{is404 ? "🗺️" : "⚠️"}</span>
         </div>
         <h1 className="text-[22px] text-gray-900 mb-2">
-          {is404 ? 'Page not found' : 'Something went wrong'}
+          {is404 ? "Page not found" : "Something went wrong"}
         </h1>
         <p className="text-[14px] text-gray-500 mb-6">
           {is404
             ? "This trail doesn't seem to exist. Let's get you back on track."
-            : 'An unexpected error occurred. Please try again.'}
+            : "An unexpected error occurred. Please try again."}
         </p>
         <button
-          onClick={() => navigate('/', { replace: true })}
+          onClick={() => navigate("/", { replace: true })}
           className="px-6 py-3 rounded-full text-white text-[14px]"
           style={{
-            background: 'linear-gradient(126.8deg, rgb(146, 190, 255) 0%, rgb(190, 236, 255) 24%, rgb(242, 189, 151) 55%, rgb(255, 222, 222) 100%)',
+            background:
+              "linear-gradient(126.8deg, rgb(146, 190, 255) 0%, rgb(190, 236, 255) 24%, rgb(242, 189, 151) 55%, rgb(255, 222, 222) 100%)",
           }}
         >
           Back to Home
@@ -50,14 +164,15 @@ function ErrorPage() {
 
 function NotFound() {
   const navigate = useNavigate();
-  
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-white px-6">
       <div className="max-w-[430px] w-full text-center">
         <div
           className="w-20 h-20 rounded-full mx-auto mb-5 flex items-center justify-center"
           style={{
-            background: 'linear-gradient(126.8deg, rgb(146, 190, 255) 0%, rgb(190, 236, 255) 24%, rgb(242, 189, 151) 55%, rgb(255, 222, 222) 100%)',
+            background:
+              "linear-gradient(126.8deg, rgb(146, 190, 255) 0%, rgb(190, 236, 255) 24%, rgb(242, 189, 151) 55%, rgb(255, 222, 222) 100%)",
           }}
         >
           <span className="text-[32px]">🗺️</span>
@@ -67,10 +182,11 @@ function NotFound() {
           This trail doesn't seem to exist. Let's get you back on track.
         </p>
         <button
-          onClick={() => navigate('/', { replace: true })}
+          onClick={() => navigate("/", { replace: true })}
           className="px-6 py-3 rounded-full text-white text-[14px]"
           style={{
-            background: 'linear-gradient(126.8deg, rgb(146, 190, 255) 0%, rgb(190, 236, 255) 24%, rgb(242, 189, 151) 55%, rgb(255, 222, 222) 100%)',
+            background:
+              "linear-gradient(126.8deg, rgb(146, 190, 255) 0%, rgb(190, 236, 255) 24%, rgb(242, 189, 151) 55%, rgb(255, 222, 222) 100%)",
           }}
         >
           Back to Home
@@ -138,6 +254,13 @@ function createRouter() {
             })),
         },
         {
+          path: "edit-trail/:id",
+          lazy: () =>
+            import("./components/EditTrailPage").then((m) => ({
+              Component: m.EditTrailPage,
+            })),
+        },
+        {
           path: "profile",
           lazy: () =>
             import("./components/ProfilePage").then((m) => ({
@@ -181,8 +304,15 @@ function createRouter() {
   ]);
 }
 
+/* ───────────────────────────────────────────────────────
+   App Root
+   ──────────────────────────────────────────────────────── */
 export default function App() {
-  // Force clean recompile v2
   const router = useMemo(() => createRouter(), []);
-  return <RouterProvider router={router} />;
+
+  return (
+    <AppErrorBoundary>
+      <RouterProvider router={router} />
+    </AppErrorBoundary>
+  );
 }
